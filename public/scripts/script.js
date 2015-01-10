@@ -19,7 +19,7 @@ function setNickname() {
         socket.emit('setNickname', nickname);
         $('#chatControls').show();
         $('#messageInput').focus();
-        $('#nicknameInput').hide();
+        $('#nicknameDialog').dialog('close');
     }
 }
 
@@ -29,13 +29,7 @@ $(function() {
     $('#nicknameDialog').dialog({
         autoOpen: true,
         closeOnEscape: false,
-        dialogClass: "no-close",
-        buttons: [{
-            text: "Submit",
-            click: function() {
-                $(this).dialog('close');
-            }
-        }]
+        dialogClass: "no-close"
     });
 });
 
