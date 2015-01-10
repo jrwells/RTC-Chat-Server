@@ -1181,6 +1181,11 @@ body .ui-tooltip {
 /* Misc visuals
 ----------------------------------*/
 
+/* Custom no close dialog */
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+
 /* Corner radius */
 .ui-corner-all,
 .ui-corner-top,

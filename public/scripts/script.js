@@ -27,9 +27,9 @@ $(function() {
     $('#chatControls').hide();
     $('#nicknameInput').focus();
     $('#nicknameDialog').dialog({
-        title: 'Enter Nickname',
         autoOpen: true,
-        dialogClass: 'no-close',
+        closeOnEscape: false,
+        dialogClass: "no-close",
         buttons: [{
             text: "Submit",
             click: function() {
