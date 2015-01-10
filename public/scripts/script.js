@@ -27,8 +27,6 @@ function setNickname() {
 $(function() {
     $('#chatControls').hide();
     $('#nicknameInput').focus();
-    $('#nicknameSet').click(function() {setNickname();});
-    $('#submit').click(function() {sendMessage();});
 });
 
 $(document).keypress(function(event) {
