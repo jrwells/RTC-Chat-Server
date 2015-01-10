@@ -18,6 +18,7 @@ function setNickname() {
         nickname = $('#nicknameInput').val();
         socket.emit('setNickname', nickname);
         $('#chatControls').show();
+        $('#messageInput').focus();
         $('#nicknameInput').hide();
         $('#nicknameSet').hide();
     }
@@ -25,6 +26,7 @@ function setNickname() {
 
 $(function() {
     $('#chatControls').hide();
+    $('#nicknameInput').focus();
     $('#nicknameSet').click(function() {setNickname();});
     $('#submit').click(function() {sendMessage();});
 });
@@ -34,8 +36,13 @@ $(document).keypress(function(event) {
         event.preventDefault();
         if ($('#messageInput').is(':focus')) {
             sendMessage();
-        } else if ($('#nicknameInput').is(':focus')) {
+        } else if ($('#messageInput').is(':visible')) {
+            $('#messageInput').focus();
+        }
+        else if ($('#nicknameInput').is(':focus')) {
             setNickname();
+        } else {
+            $('#nicknameInput').focus();
         }
     }
 });
