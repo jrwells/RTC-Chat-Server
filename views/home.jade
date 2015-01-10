@@ -3,14 +3,18 @@ html
     head
         title Chat
         link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/stylesheets/jquery-ui.css')
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
-        script(src="/socket.io/socket.io.js")
-        script(src="/scripts/script.js")
+        script(src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js')
+        script(src='/socket.io/socket.io.js')
+        script(src='/scripts/script.js')
     body
         div.container
             header
                 h1 Chat Server
-            input(type='text')#nicknameInput
+            div.ui-dialog#nicknameDialog(title='Enter Nickname') What should we call you?
+                div#nicknameControls
+                    input(type='text')#nicknameInput
             div#chatEntries
             div#chatControls
                 input(type='text')#messageInput

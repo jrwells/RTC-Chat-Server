@@ -20,13 +20,23 @@ function setNickname() {
         $('#chatControls').show();
         $('#messageInput').focus();
         $('#nicknameInput').hide();
-        $('#nicknameSet').hide();
     }
 }
 
 $(function() {
     $('#chatControls').hide();
     $('#nicknameInput').focus();
+    $('#nicknameDialog').dialog({
+        title: 'Enter Nickname',
+        autoOpen: true,
+        dialogClass: 'no-close',
+        buttons: [{
+            text: "Submit",
+            click: function() {
+                $(this).dialog('close');
+            }
+        }]
+    });
 });
 
 $(document).keypress(function(event) {
