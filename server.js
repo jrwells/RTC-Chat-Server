@@ -17,9 +17,6 @@ app.get('/', function(req, res) {
 
 var words = new xmlstream(fs.createReadStream('xml/words.xml')),
     rooms = [];
-
-console.log(words.collect('word'));
-
 var adjectives = [],
     colors = [],
     nouns = [];
