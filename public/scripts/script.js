@@ -28,10 +28,15 @@ $(function() {
     $('#nicknameDialog').dialog({
         modal: true,
         autoOpen: true,
+        open: function () {$('#nicknameAccordion').accordion();},
         closeOnEscape: false,
         draggable: false,
         resizable: false,
-        dialogClass: "no-close"
+        dialogClass: 'no-close',
+        buttons: [{
+            text:'Submit',
+            click: function () {setNickname();}
+        }]
     });
 });
 
