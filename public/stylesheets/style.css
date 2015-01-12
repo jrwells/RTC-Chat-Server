@@ -37,6 +37,12 @@ hr {
   padding-left: .5em;
 }
 
+#nicknameDialogText {
+  font-weight: bold;
+  padding-top: .3em;
+  padding-bottom: .3em;
+}
+
 #newRoomText {
   line-height: 160%;
 }

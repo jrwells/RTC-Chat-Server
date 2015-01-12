@@ -1,5 +1,6 @@
 var socket = io.connect(),
-    nickname = '';
+    nickname = '',
+    room = '';
 
 function addMessage(msg, nickname) {
     $('#chatEntries').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
@@ -14,8 +15,10 @@ function sendMessage() {
 }
 
 function checkRoomName() {
-    socket.emit('checkRoom', $('#roomInput').val(), function (data) {
+    var rn = $('#roomInput').val();
+    socket.emit('checkRoom', rn, function (data) {
         if (data.valid) {
+            room = rn;
             processInfo();
         } else {
             $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Invalid room name!</div>');
@@ -23,14 +26,16 @@ function checkRoomName() {
     });
 }
 
-function getNewRoomName() {
+function getRoomName() {
     socket.emit('getRoomName', function (data) {
         $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.name + '</div>');
+        room = data.name;
     });
 }
 
 function processInfo() {
-    socket.emit('processInfo', $('#nicknameInput').val());
+    socket.emit('setNickname', $('#nicknameInput').val());
+    socket.join(room);
     $('#chatControls').show();
     $('#nicknameDialog').dialog('close');
 }
@@ -58,7 +63,7 @@ $(function() {
     $('#nicknameDialog').dialog({
         modal: true,
         autoOpen: true,
-        open: function () {$('#nicknameAccordion').accordion({icons: false});},
+        open: function () {$('#nicknameAccordion').accordion({icons: false, active: false});},
         closeOnEscape: false,
         draggable: false,
         resizable: false,
@@ -68,7 +73,7 @@ $(function() {
             click: function () {handleInfo();}
         }]
     });
-    getNewRoomName();
+    getRoomName();
 });
 
 $(document).keypress(function (event) {
