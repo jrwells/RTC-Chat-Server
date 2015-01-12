@@ -9,12 +9,12 @@ html
         script(src='/socket.io/socket.io.js')
         script(src='/scripts/script.js')
     body
-        div.container
+        .container
             header
                 h1 Chat Server
-            div.ui-dialog#nicknameDialog(title='Enter Nickname') What should we call you?
-                div#nicknameControls
+            #nicknameDialog.ui-dialog(title='Enter Nickname') What should we call you?
+                #nicknameControls
                     input(type='text')#nicknameInput
-            div#chatEntries
-            div#chatControls
+            #chatEntries
+            #chatControls
                 input(type='text')#messageInput
