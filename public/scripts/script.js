@@ -62,10 +62,8 @@ $(document).keypress(function(event) {
         } else if ($('#messageInput').is(':visible')) {
             $('#messageInput').focus();
         }
-        else if ($('#nicknameInput').is(':focus')) {
+        else {
             setNickname();
-        } else {
-            $('#nicknameInput').focus();
         }
     }
 });
