@@ -16,23 +16,23 @@ function sendMessage() {
 function setNickname() {
     $('#nicknameError').remove();
     if ($('#nicknameInput').val() !== "") {
-        if ($('#nicknameAccordion').accordion('option', 'active') === 1) {
+        if ($('#nicknameAccordion').accordion('option', 'active') === 0) {
+            nickname = $('#nicknameInput').val();
+            socket.emit('setNickname', nickname);
+            $('#chatControls').show();
+            $('#nicknameDialog').dialog('close');
+        } else {
             if ($('#roomInput').val() !== "") {
                 nickname = $('#nicknameInput').val();
                 socket.emit('setNickname', nickname);
                 $('#chatControls').show();
                 $('#nicknameDialog').dialog('close');
             } else {
-                $('#nicknameDialog').append('<div id="nicknameError">Enter a room name</div>');
+                $('#nicknameDialog').append('<div id="nicknameError" class="ui-state-error">Enter a room name!</div>');
             }
-        } else {
-            nickname = $('#nicknameInput').val();
-            socket.emit('setNickname', nickname);
-            $('#chatControls').show();
-            $('#nicknameDialog').dialog('close');
         }
     } else {
-        $('#nicknameDialog').append('<div id="nicknameError">Enter a nickname</div>');
+        $('#nicknameDialog').append('<div id="nicknameError" class="ui-state-error">Enter a nickname!</div>');
     }
 }
 

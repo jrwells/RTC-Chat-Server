@@ -23,3 +23,9 @@ input[type=text]:focus, textarea:focus {
 .no-close .ui-dialog-titlebar-close {
   display: none;
 }
+
+#nicknameError {
+  padding-top: .5em;
+  padding-bottom: .5em;
+  padding-left: .5em;
+}
