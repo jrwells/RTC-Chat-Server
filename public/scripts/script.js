@@ -28,11 +28,11 @@ function setNickname() {
                 $('#chatControls').show();
                 $('#nicknameDialog').dialog('close');
             } else {
-                $('#nicknameDialog').append('<div id="nicknameError" class="ui-state-error">Enter a room name!</div>');
+                $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Enter a room name!</div>');
             }
         }
     } else {
-        $('#nicknameDialog').append('<div id="nicknameError" class="ui-state-error">Enter a nickname!</div>');
+        $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Enter a nickname!</div>');
     }
 }
 
