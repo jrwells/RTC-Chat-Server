@@ -28,7 +28,7 @@ $(function() {
     $('#nicknameDialog').dialog({
         modal: true,
         autoOpen: true,
-        open: function () {$('#nicknameAccordion').accordion();},
+        open: function () {$('#nicknameAccordion').accordion({icons: false});},
         closeOnEscape: false,
         draggable: false,
         resizable: false,
