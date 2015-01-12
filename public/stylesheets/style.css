@@ -20,8 +20,3 @@ input[type=text]:focus, textarea:focus {
 .no-close .ui-dialog-titlebar-close {
   display: none;
 }
-
-#tabs-movie {
-  border: none;
-  padding: 0;
-}
