@@ -13,20 +13,36 @@ function sendMessage() {
     }
 }
 
-function setNickname() {
+function checkRoomName() {
+    socket.emit('checkRoom', $('#roomInput').val(), function (data) {
+        if (data.valid) {
+            processInfo();
+        } else {
+            $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Invalid room name!</div>');
+        }
+    });
+}
+
+function getNewRoomName() {
+    socket.emit('getRoomName', function (data) {
+        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.name + '</div>');
+    });
+}
+
+function processInfo() {
+    socket.emit('processInfo', $('#nicknameInput').val());
+    $('#chatControls').show();
+    $('#nicknameDialog').dialog('close');
+}
+
+function handleInfo() {
     $('#nicknameError').remove();
     if ($('#nicknameInput').val() !== "") {
         if ($('#nicknameAccordion').accordion('option', 'active') === 0) {
-            nickname = $('#nicknameInput').val();
-            socket.emit('setNickname', nickname);
-            $('#chatControls').show();
-            $('#nicknameDialog').dialog('close');
+            processInfo();
         } else {
             if ($('#roomInput').val() !== "") {
-                nickname = $('#nicknameInput').val();
-                socket.emit('setNickname', nickname);
-                $('#chatControls').show();
-                $('#nicknameDialog').dialog('close');
+                checkRoomName();
             } else {
                 $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Enter a room name!</div>');
             }
@@ -49,12 +65,13 @@ $(function() {
         dialogClass: 'no-close',
         buttons: [{
             text:'Submit',
-            click: function () {setNickname();}
+            click: function () {handleInfo();}
         }]
     });
+    getNewRoomName();
 });
 
-$(document).keypress(function(event) {
+$(document).keypress(function (event) {
     if (event.which === 13) {
         event.preventDefault();
         if ($('#messageInput').is(':focus')) {
@@ -63,11 +80,11 @@ $(document).keypress(function(event) {
             $('#messageInput').focus();
         }
         else if ($('#nicknameInput').is(':focus') || $('#roomInput').is(':focus')) {
-            setNickname();
+            handleInfo();
         }
     }
 });
 
-socket.on('message', function(data) {
+socket.on('message', function (data) {
     addMessage(data['message'], data['nickname']);
 });

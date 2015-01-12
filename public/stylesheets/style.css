@@ -36,3 +36,11 @@ hr {
   padding-bottom: .5em;
   padding-left: .5em;
 }
+
+#newRoomText {
+  line-height: 160%;
+}
+
+#roomName {
+  font-size: 70%;
+}
