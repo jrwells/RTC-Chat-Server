@@ -62,7 +62,7 @@ $(document).keypress(function(event) {
         } else if ($('#messageInput').is(':visible')) {
             $('#messageInput').focus();
         }
-        else {
+        else if ($('#nicknameInput').is(':focus') || $('#roomInput').is(':focus')) {
             setNickname();
         }
     }
