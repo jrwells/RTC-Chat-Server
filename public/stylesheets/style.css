@@ -33,13 +33,13 @@ hr {
   display: none;
 }
 
-#nicknameError {
+.error {
   padding-top: .5em;
   padding-bottom: .5em;
   padding-left: .5em;
 }
 
-#nicknameDialogText {
+#registrationDialogText {
   font-weight: bold;
   padding-top: .3em;
   padding-bottom: .3em;

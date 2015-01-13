@@ -67,7 +67,7 @@ function broadcastMessage(socket, message) {
  */
 function broadcastNotification(socket, notification) {
     var data = {'notification': notification};
-    socket.broadcast.to(room).emit('broadcastNotification', data);
+    socket.broadcast.to(socket.roomname).emit('broadcastNotification', data);
     console.log(socket.roomname + ': ' + notification);
 }
 
@@ -84,6 +84,7 @@ io.sockets.on('connection', function (socket) {
 
     /**
      * Server has been asked to check if a room exists.
+     * Valid is true when the room exists, false when it does not.
      */
     socket.on('checkRoom', function (name, fn) {
         fn({'valid': rooms.indexOf(name) > -1});
@@ -91,6 +92,7 @@ io.sockets.on('connection', function (socket) {
 
     /**
      * Server has been asked to generate a new room.
+     * Response is set to the name of the new room.
      */
     socket.on('getRoom', function (fn) {
         var n = 'The' + _.sample(adjectives) + _.sample(colors) + _.sample(nouns);
@@ -103,19 +105,22 @@ io.sockets.on('connection', function (socket) {
 
     /**
      * Server has been asked to move a socket to a room.
+     * Success is true when setting was successful, false when it failed.
      */
     socket.on('setRoom', function (room, fn) {
         socket.join(room);
         socket.roomname = room;
         broadcastNotification(socket, socket.nickname + ' has joined the room.')
-        fn({});
+        fn({'success': true});
     });
 
     /**
      * Server has been asked to a set a socket's name.
+     * Success is true when setting was successful, false when it failed.
      */
-    socket.on('setNickname', function (data) {
+    socket.on('setNickname', function (data, fn) {
         socket.nickname = data;
+        fn({'success': true});
     });
 });
 

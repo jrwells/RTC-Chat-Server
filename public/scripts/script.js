@@ -113,7 +113,7 @@ function getRoom(fn) {
  */
 function setRoom(room, fn) {
     gRoom = room;
-    socket.emit('joinRoom', gRoom, fn);
+    socket.emit('setRoom', gRoom, fn);
 }
 
 /**
@@ -137,10 +137,14 @@ function setNickname(nickname, fn) {
  */
 function processUserRegistration(nickname, room) {
     setNickname(nickname, function (data) {
-        setRoom(room, function (data) {
-            $('#chatControls').show();
-            $('#registrationDialog').dialog('close');
-        });
+        if (data.success) {
+            setRoom(room, function (data) {
+                if (data.success) {
+                    $('#chatControls').show();
+                    $('#registrationDialog').dialog('close');
+                }
+            });
+        }
     });
 }
 
@@ -212,7 +216,7 @@ $(function() {
     });
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
-        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.response + '</div>');=
+        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.response + '</div>');
     });
 });
 
