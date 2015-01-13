@@ -192,7 +192,7 @@ function handleUserRegistration() {
 }
 
 
-// Default function adn page functionality functions 
+// Default function and page functionality functions 
 
 
 /**
