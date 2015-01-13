@@ -2,6 +2,10 @@ var socket = io.connect(),
     nickname = '',
     room = '';
 
+function dialogError(error) {
+    $('#nicknameDialog').append('<div id="errDivider"><hr><div id="nicknameError" class="ui-state-error">' + error + '</div></div>');
+}
+
 function addMessage(msg, nickname) {
     $('#chatEntries').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
 }
@@ -21,7 +25,7 @@ function checkRoomName() {
             room = rn;
             processInfo();
         } else {
-            $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Invalid room name!</div>');
+            dialogError('Invalid room name!');
         }
     });
 }
@@ -35,25 +39,32 @@ function getRoomName() {
 
 function processInfo() {
     socket.emit('setNickname', $('#nicknameInput').val());
-    socket.join(room);
-    $('#chatControls').show();
-    $('#nicknameDialog').dialog('close');
+    socket.emit('joinRoom', room, function (data) {
+        $('#chatControls').show();
+        $('#nicknameDialog').dialog('close');
+    });
 }
 
 function handleInfo() {
     $('#nicknameError').remove();
+    $('#errDivider').remove();
     if ($('#nicknameInput').val() !== "") {
-        if ($('#nicknameAccordion').accordion('option', 'active') === 0) {
-            processInfo();
-        } else {
-            if ($('#roomInput').val() !== "") {
-                checkRoomName();
+        if ($("#nicknameAccordion").accordion("option", "active") !== false) {
+            if ($('#nicknameAccordion').accordion('option', 'active') === 0) {
+                processInfo();
             } else {
-                $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Enter a room name!</div>');
+                if ($('#roomInput').val() !== "") {
+                    checkRoomName();
+                    processInfo();
+                } else {
+                    dialogError('Enter a room name!');
+                }
             }
+        } else {
+            dialogError('Choose an option!');
         }
     } else {
-        $('#nicknameDialog').append('<hr><div id="nicknameError" class="ui-state-error">Enter a nickname!</div>');
+        dialogError('Enter a nickname!');
     }
 }
 

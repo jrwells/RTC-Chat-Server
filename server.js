@@ -56,6 +56,10 @@ io.sockets.on('connection', function (socket) {
         rooms.push(n);
         fn({name: n});
     });
+    socket.on('joinRoom', function (room, fn) {
+        socket.join(room);
+        fn({});
+    });
 });
 
 server.listen(128);
