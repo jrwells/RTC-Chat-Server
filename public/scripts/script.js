@@ -1,115 +1,267 @@
+// Initiate socket connection and define important variables
 var socket = io.connect(),
-    nickname = '',
-    room = '';
+    gNickname = '', // Global user's current nickname.
+    gRoom = ''; // Global user's current room.
 
-function dialogError(error) {
-    $('#nicknameDialog').append('<div id="errDivider"><hr><div id="nicknameError" class="ui-state-error">' + error + '</div></div>');
+
+// Variables used for temporary storage.
+var tRoom = ''; // Stores the room that the server generates for the user.
+
+
+// Universal UI functions
+
+
+/**
+ * Clears all errors.
+ */
+function clearErrors() {
+    $('.error').remove();
 }
 
-function addMessage(msg, nickname) {
-    $('#chatEntries').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
+/**
+ * Throw an error in a given element.
+ * @element {DOM element} The element on which to append the error.
+ * @error {string} A short message about the type of error.
+ */
+function throwError(element, error) {
+    element.append('<div class="error ui-state-error">' + error + '</div>');
 }
 
+/**
+ * Clears all warnings.
+ */
+function clearWarnings() {
+    $('.warning').remove();
+}
+
+/**
+ * Throw a warning in a given element.
+ * @element {DOM element} The element on which to append the warning.
+ * @warning {string} A short message about the type of warning.
+ */
+function throwWarning(element, warning) {
+    element.append('<div class="warning ui-state-warning">' + warning + '</div>');
+}
+
+
+// Chat window functionality functions
+
+
+/** 
+ * Write a notification to the chat window
+ * @notification {string} Short notification message to display to the user.
+ */
 function addNotification(notification) {
-    $('#chatEntries').append('<div class="notification"><p>' + notification + '</p></div>');
+    $('#chatWindow').append('<div class="notification"><p>' + notification + '</p></div>');
 }
 
-function sendMessage() {
-    if ($('#messageInput').val() !== "") {
-        socket.emit('message', $('#messageInput').val());
-        addMessage($('#messageInput').val(), nickname);
-        $('#messageInput').val('');
-    }
+/**
+ * Write a message to the chat window
+ * @message {string} Message to display to users.
+ * @nickname {string} User's nickname that sent the message to be displayed.
+ */
+function addMessage(msg, nickname) {
+    $('#chatWindow').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
 }
 
-function checkRoomName() {
-    var rn = $('#roomInput').val();
-    socket.emit('checkRoom', rn, function (data) {
-        if (data.valid) {
-            room = rn;
-            processInfo();
-        } else {
-            dialogError('Invalid room name!');
-        }
+
+// Client to Server communication functions
+
+
+/**
+ * Protocol definition...
+ * The function/message prefix describes the use and return type for each function.
+ * These prefixes are:
+ *      send - Transmit data to server and expect no response.
+ *      check - Transmit data to server and expect a boolean response in data.valid.
+ *      get - Ping the server for data and expect the response in data.response.
+ *      set - Transmit data to the server, to modify the user, and expect a response in data.success.
+ * All response data is processed by a given callback function.
+ */
+
+/**
+ * Sends a message string to the server, which will be broadcast to the user's room.
+ * @message {string} The message to be sent to the server
+ */
+function sendMessage(message) {
+    socket.emit('sendMessage', message);
+}
+
+/**
+ * Sends a room name that will be checked for existence by the server.
+ * If the name exists, the user will attempt to join the room.
+ * If the name does not exist, an error will be thrown.
+ * @room {string} The name of the room to be checked by the server.
+ * @fn {function} Callback function to pass to server to handle response.
+ */
+function checkRoom(room, fn) {
+    socket.emit('checkRoom', room, fn);
+}
+
+/** 
+ * Asks the server to generate a new room for the user to create.
+ * @fn Callback function to pass to server to handle response.
+ */
+function getRoom(fn) {
+    socket.emit('getRoom', fn);
+}
+
+/**
+ * Asks the server to move the user to the user's room (gRoom).
+ * @room {string} Name of the room that the user will be moved to.
+ * @fn {function} Callback function to pass to the server to handle response.
+ */
+function setRoom(room, fn) {
+    gRoom = room;
+    socket.emit('joinRoom', gRoom, fn);
+}
+
+/**
+ * Asks the server to set the user's nickname (gNickname).
+ * @nickname {string} The nickname of the user to be set.
+ * @fn {function} Callback function to pass to server to handle response.
+ */
+function setNickname(nickname, fn) {
+    gNickname = nickname;
+    socket.emit('setNickname', gNickname, fn);
+}
+
+
+// User interaction handling
+
+
+/**
+ * Processse the information submitted by the user during initial registration.
+ * @nickname {string} The user's desired nickname.
+ * @room {string} The user's desired room destination.
+ */
+function processUserRegistration(nickname, room) {
+    setNickname(nickname, function (data) {
+        setRoom(room, function (data) {
+            $('#chatControls').show();
+            $('#registrationDialog').dialog('close');
+        });
     });
 }
 
-function getRoomName() {
-    socket.emit('getRoomName', function (data) {
-        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.name + '</div>');
-        room = data.name;
-    });
-}
-
-function processInfo() {
-    socket.emit('setNickname', $('#nicknameInput').val());
-    nickname = $('#nicknameInput').val();
-    socket.emit('joinRoom', room, function (data) {
-        $('#chatControls').show();
-        $('#nicknameDialog').dialog('close');
-    });
-}
-
-function handleInfo() {
-    $('#nicknameError').remove();
-    $('#errDivider').remove();
-    if ($('#nicknameInput').val() !== "") {
-        if ($("#nicknameAccordion").accordion("option", "active") !== false) {
-            if ($('#nicknameAccordion').accordion('option', 'active') === 0) {
-                processInfo();
+/**
+ * Handles user information entering.
+ * Makes sure that all fields have potentially valid information before processing.
+ */
+function handleUserRegistration() {
+    clearErrors();
+    var nickname = $('#nicknameInput').val();
+    // Make sure a nickname has been entered.
+    if (nickname !== "") {
+        // Make sure user has chosen valid room option (create or join).
+        if ($("#roomAccordion").accordion("option", "active") !== false) {
+            // If option is 0, user is creating a new room.
+            if ($('#roomAccordion').accordion('option', 'active') === 0) {
+                processUserRegistration(nickname, tRoom);
             } else {
-                if ($('#roomInput').val() !== "") {
-                    checkRoomName();
-                    processInfo();
+                // Else, if option is 1, user is joining a room.
+                var room = $('#roomInput').val();
+                // Make sure a room name has been entered.
+                if (room !== "") {
+                    checkRoom(room, function (data) {
+                        // data.valid will be true if the room exists on the server.
+                        if (data.valid) {
+                            processUserRegistration(nickname, room);
+                        } else {
+                            // The room does not exist.
+                            throwError($('#registrationDialog'), 'Invalid room name!');
+                        }
+                    });
                 } else {
-                    dialogError('Enter a room name!');
+                    // Room name is blank.
+                    throwError($('#registrationDialog'), 'Enter a room name!');
                 }
             }
         } else {
-            dialogError('Choose an option!');
+            // User has not touched a room option.
+            throwError($('#registrationDialog'), 'Choose an option!');
         }
     } else {
-        dialogError('Enter a nickname!');
+        // Nickname is blank.
+        throwError($('#registrationDialog'), 'Enter a nickname!');
     }
 }
 
+
+// Default function adn page functionality functions 
+
+
+/**
+ * Default function which runs when page is ready.
+ */
 $(function() {
     $('#chatControls').hide();
     $('#nicknameInput').focus();
-    $('#nicknameDialog').dialog({
+    $('#registrationDialog').dialog({ // Display user registration dialog immediately.
         modal: true,
         autoOpen: true,
-        open: function () {$('#nicknameAccordion').accordion({icons: false, active: false});},
+        open: function () {$('#roomAccordion').accordion({icons: false, active: false});},
         closeOnEscape: false,
         draggable: false,
         resizable: false,
         dialogClass: 'no-close',
         buttons: [{
             text:'Submit',
-            click: function () {handleInfo();}
+            click: function () {handleUserRegistration();}
         }]
     });
-    getRoomName();
+    getRoom(function (data) {
+        tRoom = data.response; // Stores this room name incase the user decides to create a room.
+        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.response + '</div>');=
+    });
 });
 
+
+/**
+ * Handles all user keypresses
+ */
 $(document).keypress(function (event) {
+    // Handles the ENTER key being pressed.
     if (event.which === 13) {
         event.preventDefault();
-        if ($('#messageInput').is(':focus')) {
-            sendMessage();
+        // If user was typing message, send the message.
+        if ($('#messageInput').is(':focus')) { 
+            if ($('#messageInput').val() !== "") {
+                sendMessage($('#messageInput').val());
+                addMessage($('#messageInput').val(), nickname);
+                $('#messageInput').val('');
+            }
         } else if ($('#messageInput').is(':visible')) {
+            // If user has registered, focus the message input field.
             $('#messageInput').focus();
         }
         else if ($('#nicknameInput').is(':focus') || $('#roomInput').is(':focus')) {
-            handleInfo();
+            // If the user has finished typing in a registration field, attempt to handle registration.
+            handleUserRegistration();
         }
     }
 });
 
-socket.on('message', function (data) {
+
+// Server to client communication messages.
+
+/**
+ * Message expectations are defined by their prefixes.
+ * These prefixes are:
+ *      universal - Transmit data to all clients, expect no response.
+ *      broadcast - Transmit data to all clients in a given room, expect no response.
+ */
+
+/**
+ * Handles a message inside the user's room.
+ */
+socket.on('broadcastMessage', function (data) {
     addMessage(data['message'], data['nickname']);
 });
 
-socket.on('notification', function (data) {
+/**
+ * Handles a server notification inside the uers's room.
+ */
+socket.on('broadcastNotification', function (data) {
     addNotification(data['notification']);
 });
