@@ -36,9 +36,9 @@ io.sockets.on('connection', function (socket) {
         socket.nickname = data;
     });
     socket.on('message', function (message) {
-        var data = { 'message' : message, 
-                     'nickname' : socket.nickname };
-        socket.broadcast.emit('message', data);
+        var data = {'message': message, 
+                    'nickname': socket.nickname};
+        socket.broadcast.to(socket.roomname).emit('message', data);
         console.log("user " + socket.nickname + " sent this: " + message);
     });
     socket.on('checkRoom', function (name, fn) {
@@ -58,6 +58,9 @@ io.sockets.on('connection', function (socket) {
     });
     socket.on('joinRoom', function (room, fn) {
         socket.join(room);
+        var data = {'notification': socket.nickname + ' has joined the room.'};
+        socket.broadcast.to(room).emit('notification', data);
+        socket.roomname = room;
         fn({});
     });
 });

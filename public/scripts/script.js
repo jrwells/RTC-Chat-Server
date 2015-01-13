@@ -10,10 +10,14 @@ function addMessage(msg, nickname) {
     $('#chatEntries').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
 }
 
+function addNotification(notification) {
+    $('#chatEntries').append('<div class="notification"><p>' + notification + '</p></div>');
+}
+
 function sendMessage() {
     if ($('#messageInput').val() !== "") {
         socket.emit('message', $('#messageInput').val());
-        addMessage($('#messageInput').val(), nickname, new Date().toISOString(), true);
+        addMessage($('#messageInput').val(), nickname);
         $('#messageInput').val('');
     }
 }
@@ -39,6 +43,7 @@ function getRoomName() {
 
 function processInfo() {
     socket.emit('setNickname', $('#nicknameInput').val());
+    nickname = $('#nicknameInput').val();
     socket.emit('joinRoom', room, function (data) {
         $('#chatControls').show();
         $('#nicknameDialog').dialog('close');
@@ -103,4 +108,8 @@ $(document).keypress(function (event) {
 
 socket.on('message', function (data) {
     addMessage(data['message'], data['nickname']);
+});
+
+socket.on('notification', function (data) {
+    addNotification(data['notification']);
 });
