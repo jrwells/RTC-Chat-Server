@@ -1,3 +1,4 @@
+/* All Module Imports */
 var _ = require('underscore'),
     http = require('http'),
     express = require('express'),
@@ -7,6 +8,7 @@ var _ = require('underscore'),
     app = module.exports.app = express(),
     server = http.createServer(app);
 
+/* Set up server file structure */
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.set("view options", { layout: false });
@@ -15,11 +17,14 @@ app.get('/', function(req, res) {
   res.render('home.jade');
 });
 
+/* Import words for room name generation */
 var words = new xmlstream(fs.createReadStream('xml/words.xml')),
     rooms = [];
 var adjectives = [],
     colors = [],
     nouns = [];
+
+/* Extract only words from the xml document */
 words.on('text: adjectives > word', function (item) {
     adjectives.push(item['$text']);
 });
@@ -30,6 +35,7 @@ words.on('text: nouns > word', function (item) {
     nouns.push(item['$text']);
 });
 
+/* Define server and client communication protocol */
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
     socket.on('setNickname', function (data) {
@@ -65,5 +71,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
+/* Start server, and tell us it's running */
 server.listen(128);
 console.log('Server Running...');
