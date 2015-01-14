@@ -140,8 +140,8 @@ function processUserRegistration(nickname, room) {
         if (data.success) {
             setRoom(room, function (data) {
                 if (data.success) {
-                    $('#chatControls').show();
-                    $('#registrationDialog').dialog('close');
+                    $('#chat-controls').show();
+                    $('#reg-modal').dialog('close');
                 }
             });
         }
@@ -154,7 +154,7 @@ function processUserRegistration(nickname, room) {
  */
 function handleUserRegistration() {
     clearErrors();
-    var nickname = $('#nicknameInput').val();
+    var nickname = $('#nickname-input').val();
     // Make sure a nickname has been entered.
     if (nickname !== "") {
         // Make sure user has chosen valid room option (create or join).
@@ -164,7 +164,7 @@ function handleUserRegistration() {
                 processUserRegistration(nickname, tRoom);
             } else {
                 // Else, if option is 1, user is joining a room.
-                var room = $('#roomInput').val();
+                var room = $('#room-input').val();
                 // Make sure a room name has been entered.
                 if (room !== "") {
                     checkRoom(room, function (data) {
@@ -173,21 +173,21 @@ function handleUserRegistration() {
                             processUserRegistration(nickname, room);
                         } else {
                             // The room does not exist.
-                            throwError($('#registrationDialog'), 'Invalid room name!');
+                            throwError($('#reg-modal'), 'Invalid room name!');
                         }
                     });
                 } else {
                     // Room name is blank.
-                    throwError($('#registrationDialog'), 'Enter a room name!');
+                    throwError($('#reg-modal'), 'Enter a room name!');
                 }
             }
         } else {
             // User has not touched a room option.
-            throwError($('#registrationDialog'), 'Choose an option!');
+            throwError($('#reg-modal'), 'Choose an option!');
         }
     } else {
         // Nickname is blank.
-        throwError($('#registrationDialog'), 'Enter a nickname!');
+        throwError($('#reg-modal'), 'Enter a nickname!');
     }
 }
 
@@ -199,14 +199,14 @@ function handleUserRegistration() {
  * Default function which runs when page is ready.
  */
 $(function() {
-    $('#chatControls').hide();
+    $('#chat-controls').hide();
     $('#reg-modal').modal({
         'show': true,
         'keyboard': false,
         'backdrop': 'static'
     });
-    //$('#nicknameInput').focus();
-    /*$('#registrationDialog').dialog({ // Display user registration dialog immediately.
+    //$('#nickname-input').focus();
+    /*$('#reg-modal').dialog({ // Display user registration dialog immediately.
         modal: true,
         autoOpen: true,
         open: function () {$('#roomAccordion').accordion({icons: false, active: false});},
@@ -234,17 +234,17 @@ $(document).keypress(function (event) {
     if (event.which === 13) {
         event.preventDefault();
         // If user was typing message, send the message.
-        if ($('#messageInput').is(':focus')) { 
-            if ($('#messageInput').val() !== "") {
-                sendMessage($('#messageInput').val());
-                addMessage($('#messageInput').val(), nickname);
-                $('#messageInput').val('');
+        if ($('#message-input').is(':focus')) { 
+            if ($('#message-input').val() !== "") {
+                sendMessage($('#message-input').val());
+                addMessage($('#message-input').val(), nickname);
+                $('#message-input').val('');
             }
-        } else if ($('#messageInput').is(':visible')) {
+        } else if ($('#message-input').is(':visible')) {
             // If user has registered, focus the message input field.
-            $('#messageInput').focus();
+            $('#message-input').focus();
         }
-        else if ($('#nicknameInput').is(':focus') || $('#roomInput').is(':focus')) {
+        else if ($('#nickname-input').is(':focus') || $('#room-input').is(':focus')) {
             // If the user has finished typing in a registration field, attempt to handle registration.
             handleUserRegistration();
         }
