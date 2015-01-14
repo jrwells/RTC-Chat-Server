@@ -232,7 +232,7 @@ $(function() {
         e.preventDefault()
         $(this).tab('show')
     });
-    $('#submit-user-button').click(function (e) {
+    $('#connect-user-button').click(function (e) {
         
     });
     getRoom(function (data) {
