@@ -8,6 +8,42 @@ var socket = io.connect(),
 var tRoom = ''; // Stores the room that the server generates for the user.
 
 
+// Universal UI functions
+
+
+/**
+ * Clears all errors.
+ */
+function clearErrors() {
+    $('.chat-error').remove();
+}
+
+/**
+ * Throw an error in a given element.
+ * @element {DOM element} The element on which to append the error.
+ * @error {string} A short message about the type of error.
+ */
+function throwError(element, error) {
+    element.append('<div class="chat-error">' + error + '</div>');
+}
+
+/**
+ * Clears all warnings.
+ */
+function clearWarnings() {
+    $('.chat-warning').remove();
+}
+
+/**
+ * Throw a warning in a given element.
+ * @element {DOM element} The element on which to append the warning.
+ * @warning {string} A short message about the type of warning.
+ */
+function throwWarning(element, warning) {
+    element.append('<div class="chat-warning">' + warning + '</div>');
+}
+
+
 // User connection validation functions
 
 
@@ -49,72 +85,25 @@ function validateRoom() {
 
 
 function nameError(error) {
-    clearErrors();
     $('#nickname-group').removeClass('has-success');
     $('#nickname-group').addClass('has-error .has-feedback');
     $('#nickname-group').append('<label class="control-label chat-error" for="nickname-input">' + error + '</label>');
-    $('#nickname-group').append('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
-    $('#nickname-group').append('<span id="nickname-status" class="sr-only chat-error">(error)</span>');
 }
 
 function nameSuccess() {
-    clearErrors();
     $('#nickname-group').removeClass('has-error');
     $('#nickname-group').addClass('has-success .has-feedback');
-    $('#nickname-group').append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
-    $('#nickname-group').append('<span id="nickname-status" class="sr-only chat-error">(success)</span>');
 }
 
 function roomError(error) {
-    clearErrors();
     $('#room-group').removeClass('has-success');
     $('#room-group').addClass('has-error .has-feedback');
     $('#room-group').append('<label class="control-label chat-error" for="room-input">' + error + '</label>');
-    $('#room-group').append('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
-    $('#room-group').append('<span id="room-status" class="sr-only chat-error">(error)</span>');
 }
 
 function roomSuccess() {
-    clearErrors();
     $('#room-group').removeClass('has-error');
     $('#room-group').addClass('has-success .has-feedback');
-    $('#room-group').append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
-    $('#room-group').append('<span id="room-status" class="sr-only chat-error">(success)</span>');
-}
-
-// Universal UI functions
-
-
-/**
- * Clears all errors.
- */
-function clearErrors() {
-    $('.chat-error').remove();
-}
-
-/**
- * Throw an error in a given element.
- * @element {DOM element} The element on which to append the error.
- * @error {string} A short message about the type of error.
- */
-function throwError(element, error) {
-    element.append('<div class="chat-error">' + error + '</div>');
-}
-
-/**
- * Clears all warnings.
- */
-function clearWarnings() {
-    $('.chat-warning').remove();
-}
-
-/**
- * Throw a warning in a given element.
- * @element {DOM element} The element on which to append the warning.
- * @warning {string} A short message about the type of warning.
- */
-function throwWarning(element, warning) {
-    element.append('<div class="chat-warning">' + warning + '</div>');
 }
 
 
@@ -244,6 +233,7 @@ $(function() {
         $(this).tab('show');
     });
     $('#connect-user-button').click(function (e) {
+        clearErrors();
         var nameValidation = validateName();
         if ($('#join-tab').hasClass('active')) {
             // Begin room validation if join-tab is open.
@@ -252,6 +242,7 @@ $(function() {
                     // data.valid will be true if the room exists on the server.
                     if (data.valid) {
                         if (nameValidation) {
+                            roomSuccess();
                             processUserConnection($('#nickname-input').val(), $('#room-input').val());
                         }
                     } else {
@@ -293,7 +284,7 @@ $(document).keypress(function (event) {
         }
         else if ($('#nickname-input').is(':focus') || $('#room-input').is(':focus')) {
             // If the user has finished typing in a registration field, attempt to handle registration.
-            handleUserRegistration();
+            //handleUserRegistration();
         }
     }
 });
