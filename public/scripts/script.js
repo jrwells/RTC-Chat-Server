@@ -129,7 +129,7 @@ function roomSuccess() {
  * @notification {string} Short notification message to display to the user.
  */
 function addNotification(notification) {
-    $('#chatWindow').append('<div class="notification"><p>' + notification + '</p></div>');
+    $('#chat-window').append('<div class="notification"><p>' + notification + '</p></div>');
 }
 
 /**
@@ -138,7 +138,7 @@ function addNotification(notification) {
  * @nickname {string} User's nickname that sent the message to be displayed.
  */
 function addMessage(msg, nickname) {
-    $('#chatWindow').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
+    $('#chat-window').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
 }
 
 
@@ -296,7 +296,7 @@ $(document).keypress(function (event) {
             // If user was typing message, send the message.
             if ($('#message-input').val() !== "") {
                 sendMessage($('#message-input').val());
-                addMessage($('#message-input').val(), nickname);
+                addMessage($('#message-input').val(), gNickname);
                 $('#message-input').val('');
             }
         } else if ($('#message-input').is(':visible')) {
