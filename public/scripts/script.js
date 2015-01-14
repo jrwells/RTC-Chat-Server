@@ -204,6 +204,7 @@ function processUserConnection(nickname, room) {
             setRoom(room, function (data) {
                 if (data.success) {
                     $('#chat-controls').show();
+                    $('#reg-modal').modal('hide');
                 }
             });
         }
