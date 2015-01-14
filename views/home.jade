@@ -10,22 +10,22 @@ html
         script(src='/socket.io/socket.io.js')
         script(src='/scripts/script.js')
     body
-        .container
+        div.container
             header
                 h1 Chat Server
-            #reg-modal.modal.fade
-                .modal-dialog
-                    .modal-content
-                        .modal-header
+            div#reg-modal.modal.fade
+                div.modal-dialog
+                    div.modal-content
+                        div.modal-header
                             h4.modal-title
                                 | User Registration
-                        .modal-body
+                        div.modal-body
                             p
                                 | Do you want to save changes you made to document before closing?
                             p.text-warning
                                 small
                                     | If you don't save, your changes will be lost
-                        .modal-footer
+                        div.modal-footer
                             button.btn.btn-primary(type="button")
                                 | Submit
             #chatWindow
