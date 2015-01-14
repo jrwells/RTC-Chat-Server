@@ -3,30 +3,31 @@ html
     head
         title Chat
         link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href='/stylesheets/jquery-ui.css')
-        link(rel='stylesheet', href='/stylesheets/jquery-ui.structure.css')
-        link(rel='stylesheet', href='/stylesheets/jquery-ui.theme.css')
-        script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
-        script(src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js')
+        link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/bootstrap/css/bootstrap-theme.min.css')
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+        script(src='/bootstrap/js/bootstrap.js')
         script(src='/socket.io/socket.io.js')
         script(src='/scripts/script.js')
     body
         .container
             header
                 h1 Chat Server
-            #registrationDialog.ui-dialog(title='Enter Your Info') 
-                #registrationDialogText What should we call you?
-                #nicknameControls
-                    input(type='text')#nicknameInput
-                #registrationDialogText And pick one of the below!
-                #roomAccordion
-                    h3 Create a room
-                    #accordionSection
-                        #newRoomText 
-                    h3 Join a room
-                    #accordionSection
-                        #registrationDialogText What's the room name?
-                        input(type='text')#roomInput
+            #reg-modal.modal.fade
+                .modal-dialog
+                    .modal-content
+                        .modal-header
+                            h4.modal-title
+                                | User Registration
+                        .modal-body
+                            p
+                                | Do you want to save changes you made to document before closing?
+                            p.text-warning
+                                small
+                                    | If you don't save, your changes will be lost
+                        .modal-footer
+                            button.btn.btn-primary(type="button")
+                                | Submit
             #chatWindow
             #chatControls
                 input(type='text')#messageInput

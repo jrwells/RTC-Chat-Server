@@ -200,8 +200,9 @@ function handleUserRegistration() {
  */
 $(function() {
     $('#chatControls').hide();
-    $('#nicknameInput').focus();
-    $('#registrationDialog').dialog({ // Display user registration dialog immediately.
+    $('#reg-modal').modal('show');
+    //$('#nicknameInput').focus();
+    /*$('#registrationDialog').dialog({ // Display user registration dialog immediately.
         modal: true,
         autoOpen: true,
         open: function () {$('#roomAccordion').accordion({icons: false, active: false});},
@@ -213,11 +214,11 @@ $(function() {
             text:'Submit',
             click: function () {handleUserRegistration();}
         }]
-    });
+    });*//*
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
         $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.response + '</div>');
-    });
+    });*/
 });
 
 
