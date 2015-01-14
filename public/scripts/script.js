@@ -279,7 +279,7 @@ $(function() {
         validateUserConnection();
     });
     getRoom(function (data) {
-        tRoom = data.response; // Stores this room name incase the user decides to create a room.
+        tRoom = data.response; // Stores this room name in case the user decides to create a room.
         $('#create-input').val(data.response);
     });
 });
