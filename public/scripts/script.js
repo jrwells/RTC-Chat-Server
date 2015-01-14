@@ -208,7 +208,7 @@ function setNickname(nickname, fn) {
 
 
 /**
- * Processse the information submitted by the user during initial connection.
+ * Processs the information submitted by the user during initial connection.
  * @nickname {string} The user's desired nickname.
  * @room {string} The user's desired room destination.
  */
@@ -225,6 +225,34 @@ function processUserConnection(nickname, room) {
     });
 }
 
+/**
+ * Attempt to validation information prior to connection.
+ */
+ function validateUserConnection() {
+    clearErrors();
+    var nameValidation = validateName();
+    if ($('#join-tab').hasClass('active')) {
+        // Begin room validation if join-tab is open.
+        if (validateRoom()) {
+            checkRoom($('#room-input').val(), function (data) {
+                // data.valid will be true if the room exists on the server.
+                if (data.valid) {
+                    if (nameValidation) {
+                        roomSuccess();
+                        processUserConnection($('#nickname-input').val(), $('#room-input').val());
+                    }
+                } else {
+                    roomError('That room doesn\'t exist!');
+                }
+            });
+        }
+    } else {
+        // Attempt to create and join new room if create-tab is open.
+        if (nameValidation) {
+            processUserConnection($('#nickname-input').val(), tRoom);
+        }
+    }
+ }
 
 // Default function and page functionality functions 
 
@@ -248,29 +276,7 @@ $(function() {
         $(this).tab('show');
     });
     $('#connect-user-button').click(function (e) {
-        clearErrors();
-        var nameValidation = validateName();
-        if ($('#join-tab').hasClass('active')) {
-            // Begin room validation if join-tab is open.
-            if (validateRoom()) {
-                checkRoom($('#room-input').val(), function (data) {
-                    // data.valid will be true if the room exists on the server.
-                    if (data.valid) {
-                        if (nameValidation) {
-                            roomSuccess();
-                            processUserConnection($('#nickname-input').val(), $('#room-input').val());
-                        }
-                    } else {
-                        roomError('That room doesn\'t exist!');
-                    }
-                });
-            }
-        } else {
-            // Attempt to create and join new room if create-tab is open.
-            if (nameValidation) {
-                processUserConnection($('#nickname-input').val(), tRoom);
-            }
-        }
+        validateUserConnection();
     });
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
@@ -286,20 +292,20 @@ $(document).keypress(function (event) {
     // Handles the ENTER key being pressed.
     if (event.which === 13) {
         event.preventDefault();
-        // If user was typing message, send the message.
         if ($('#message-input').is(':focus')) { 
+            // If user was typing message, send the message.
             if ($('#message-input').val() !== "") {
                 sendMessage($('#message-input').val());
                 addMessage($('#message-input').val(), nickname);
                 $('#message-input').val('');
             }
         } else if ($('#message-input').is(':visible')) {
-            // If user has registered, focus the message input field.
+            // If user has connected, focus the message input field.
             $('#message-input').focus();
         }
         else if ($('#nickname-input').is(':focus') || $('#room-input').is(':focus')) {
-            // If the user has finished typing in a registration field, attempt to handle registration.
-            //handleUserRegistration();
+            // If the user has finished typing in a connection field, attempt to validate connection.
+            validateUserConnection();
         }
     }
 });
