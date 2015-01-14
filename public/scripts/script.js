@@ -200,7 +200,11 @@ function handleUserRegistration() {
  */
 $(function() {
     $('#chatControls').hide();
-    $('#reg-modal').modal('show');
+    $('#reg-modal').modal({
+        'show': true,
+        'keyboard': false,
+        'backdrop': 'static'
+    });
     //$('#nicknameInput').focus();
     /*$('#registrationDialog').dialog({ // Display user registration dialog immediately.
         modal: true,
