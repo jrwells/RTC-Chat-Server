@@ -81,26 +81,40 @@ function validateRoom() {
 }
 
 
-// User connection UI functions
+// User connectiong error/success functions
 
 
+/**
+ * Surrounds the input box with red and displays an error message.
+ * @error {string} The error message that is displayed below input box.
+ */
 function nameError(error) {
     $('#nickname-group').removeClass('has-success');
     $('#nickname-group').addClass('has-error .has-feedback');
     $('#nickname-group').append('<label class="control-label chat-error" for="nickname-input">' + error + '</label>');
 }
 
+/**
+ * Surrounds the input box with green to indicate a valid input.
+ */
 function nameSuccess() {
     $('#nickname-group').removeClass('has-error');
     $('#nickname-group').addClass('has-success .has-feedback');
 }
 
+/**
+ * Surrounds the input box with red and displays an error message.
+ * @error {string} The error message that is displayed below input box.
+ */
 function roomError(error) {
     $('#room-group').removeClass('has-success');
     $('#room-group').addClass('has-error .has-feedback');
     $('#room-group').append('<label class="control-label chat-error" for="room-input">' + error + '</label>');
 }
 
+/**
+ * Surrounds the input box with green to indicate a valid input.
+ */
 function roomSuccess() {
     $('#room-group').removeClass('has-error');
     $('#room-group').addClass('has-success .has-feedback');
