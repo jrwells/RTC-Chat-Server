@@ -95,9 +95,9 @@ io.sockets.on('connection', function (socket) {
      * Response is set to the name of the new room.
      */
     socket.on('getRoom', function (fn) {
-        var n = 'The' + _.sample(adjectives) + _.sample(colors) + _.sample(nouns);
+        var n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         while (rooms.indexOf(n) > -1) {
-            n = 'The' + _.sample(adjectives) + _.sample(colors) + _.sample(nouns);
+            n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         }
         rooms.push(n);
         fn({'response': n});

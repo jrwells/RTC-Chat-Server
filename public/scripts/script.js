@@ -8,6 +8,25 @@ var socket = io.connect(),
 var tRoom = ''; // Stores the room that the server generates for the user.
 
 
+// User connection UI functions
+
+
+function nameError(error) {
+
+}
+
+function nameSuccess() {
+
+}
+
+function roomError(error) {
+
+}
+
+function roomSuccess() {
+
+}
+
 // Universal UI functions
 
 
@@ -24,7 +43,7 @@ function clearErrors() {
  * @error {string} A short message about the type of error.
  */
 function throwError(element, error) {
-    element.append('<div class="error ui-state-error">' + error + '</div>');
+    element.append('<div class="chat-error">' + error + '</div>');
 }
 
 /**
@@ -40,7 +59,7 @@ function clearWarnings() {
  * @warning {string} A short message about the type of warning.
  */
 function throwWarning(element, warning) {
-    element.append('<div class="warning ui-state-warning">' + warning + '</div>');
+    element.append('<div class="chat-warning">' + warning + '</div>');
 }
 
 
@@ -205,6 +224,17 @@ $(function() {
         'keyboard': false,
         'backdrop': 'static'
     });
+    $('#create-tab-header a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    });
+    $('#join-tab-header a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    });
+    $('#submit-user-button').click(function (e) {
+        
+    });
     //$('#nickname-input').focus();
     /*$('#reg-modal').dialog({ // Display user registration dialog immediately.
         modal: true,
@@ -218,11 +248,11 @@ $(function() {
             text:'Submit',
             click: function () {handleUserRegistration();}
         }]
-    });*//*
+    });*/
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
-        $('#newRoomText').append('Your room\'s name is:<div id="roomName">' + data.response + '</div>');
-    });*/
+        $('#create-input').val(data.response);
+    });
 });
 
 
