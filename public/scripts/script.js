@@ -235,20 +235,6 @@ $(function() {
     $('#submit-user-button').click(function (e) {
         
     });
-    //$('#nickname-input').focus();
-    /*$('#reg-modal').dialog({ // Display user registration dialog immediately.
-        modal: true,
-        autoOpen: true,
-        open: function () {$('#roomAccordion').accordion({icons: false, active: false});},
-        closeOnEscape: false,
-        draggable: false,
-        resizable: false,
-        dialogClass: 'no-close',
-        buttons: [{
-            text:'Submit',
-            click: function () {handleUserRegistration();}
-        }]
-    });*/
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
         $('#create-input').val(data.response);
