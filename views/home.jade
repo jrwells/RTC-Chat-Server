@@ -21,10 +21,10 @@ html
                                 | Connect To Chat
                         div.modal-body
                             form
-                                div.form-group
+                                div#nickname-group.form-group
                                     label(for='nickname-input')
                                         | Nickname
-                                    input#nickname-input.form-control.input-xlarge(type='text' placeholder='Enter a nickname')
+                                    input#nickname-input.form-control.input-xlarge(type='text' placeholder='Enter a nickname' aria-describedby="nickname-status")
                                 div.form-group
                                     div(role='tabpanel')
                                         ul.nav.nav-tabs(role='tablist')
@@ -43,10 +43,10 @@ html
                                                     input#create-input.form-control.input-xlarge(type='text' disabled)
                                             div#join-tab.tab-pane(role='tabpanel')
                                                 br
-                                                div.form-group
+                                                div#room-group.form-group
                                                     label(for='join-input')
                                                         | Enter the name of your room...                                
-                                                    input#join-input.form-control.input-xlarge(type='text' placeholder='Enter a room name')                                        
+                                                    input#join-input.form-control.input-xlarge(type='text' placeholder='Enter a room name' aria-describedby="room-status")                                        
                         div.modal-footer
                             button#connect-user-button.btn.btn-primary(type='button')
                                 | Connect

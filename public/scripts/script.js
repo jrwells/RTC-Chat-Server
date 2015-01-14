@@ -8,23 +8,78 @@ var socket = io.connect(),
 var tRoom = ''; // Stores the room that the server generates for the user.
 
 
+// User connection validation functions
+
+
+/**
+ * Perform local validation of the nickname-input field.
+ * Displays an error if one exists, and success if one does not.
+ * @return {boolean} returns false on error and true on success.
+ */
+function validateName() {
+    if (!$('#nickname-input').val()) {
+        nameError('Must Enter a Nickname!');
+        return false;
+    } else if ($('#nickname-input').val().length < 3) {
+        nameError('Nickname must be at least 3 characters!');
+        return false;
+    } else {
+        nameSuccess();
+        return true;
+    }
+}
+
+/**
+ * Performs only the local validation of the room-input field.
+ * (Does not check the server for the room's existence.)
+ * Displays an error if one exists, and success if one does not.
+ * @return {boolean} returns false on error  and true on success.
+ */
+function validateRoom() {
+    if (!$('#room-input').val()) {
+        roomError('Must Enter a Room!');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
 // User connection UI functions
 
 
 function nameError(error) {
-
+    clearErrors();
+    $('#nickname-group').removeClass('has-success');
+    $('#nickname-group').addClass('has-error .has-feedback');
+    $('#nickname-group').append('<label class="control-label chat-error" for="nickname-input">' + error + '</label>');
+    $('#nickname-group').append('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
+    $('#nickname-group').append('<span id="nickname-status" class="sr-only chat-error">(error)</span>');
 }
 
 function nameSuccess() {
-
+    clearErrors();
+    $('#nickname-group').removeClass('has-error');
+    $('#nickname-group').addClass('has-success .has-feedback');
+    $('#nickname-group').append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+    $('#nickname-group').append('<span id="nickname-status" class="sr-only chat-error">(success)</span>');
 }
 
 function roomError(error) {
-
+    clearErrors();
+    $('#room-group').removeClass('has-success');
+    $('#room-group').addClass('has-error .has-feedback');
+    $('#room-group').append('<label class="control-label chat-error" for="room-input">' + error + '</label>');
+    $('#room-group').append('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>');
+    $('#room-group').append('<span id="room-status" class="sr-only chat-error">(error)</span>');
 }
 
 function roomSuccess() {
-
+    clearErrors();
+    $('#room-group').removeClass('has-error');
+    $('#room-group').addClass('has-success .has-feedback');
+    $('#room-group').append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+    $('#room-group').append('<span id="room-status" class="sr-only chat-error">(success)</span>');
 }
 
 // Universal UI functions
@@ -34,7 +89,7 @@ function roomSuccess() {
  * Clears all errors.
  */
 function clearErrors() {
-    $('.error').remove();
+    $('.chat-error').remove();
 }
 
 /**
@@ -50,7 +105,7 @@ function throwError(element, error) {
  * Clears all warnings.
  */
 function clearWarnings() {
-    $('.warning').remove();
+    $('.chat-warning').remove();
 }
 
 /**
@@ -150,64 +205,20 @@ function setNickname(nickname, fn) {
 
 
 /**
- * Processse the information submitted by the user during initial registration.
+ * Processse the information submitted by the user during initial connection.
  * @nickname {string} The user's desired nickname.
  * @room {string} The user's desired room destination.
  */
-function processUserRegistration(nickname, room) {
+function processUserConnection(nickname, room) {
     setNickname(nickname, function (data) {
         if (data.success) {
             setRoom(room, function (data) {
                 if (data.success) {
                     $('#chat-controls').show();
-                    $('#reg-modal').dialog('close');
                 }
             });
         }
     });
-}
-
-/**
- * Handles user information entering.
- * Makes sure that all fields have potentially valid information before processing.
- */
-function handleUserRegistration() {
-    clearErrors();
-    var nickname = $('#nickname-input').val();
-    // Make sure a nickname has been entered.
-    if (nickname !== "") {
-        // Make sure user has chosen valid room option (create or join).
-        if ($("#roomAccordion").accordion("option", "active") !== false) {
-            // If option is 0, user is creating a new room.
-            if ($('#roomAccordion').accordion('option', 'active') === 0) {
-                processUserRegistration(nickname, tRoom);
-            } else {
-                // Else, if option is 1, user is joining a room.
-                var room = $('#room-input').val();
-                // Make sure a room name has been entered.
-                if (room !== "") {
-                    checkRoom(room, function (data) {
-                        // data.valid will be true if the room exists on the server.
-                        if (data.valid) {
-                            processUserRegistration(nickname, room);
-                        } else {
-                            // The room does not exist.
-                            throwError($('#reg-modal'), 'Invalid room name!');
-                        }
-                    });
-                } else {
-                    // Room name is blank.
-                    throwError($('#reg-modal'), 'Enter a room name!');
-                }
-            }
-        } else {
-            // User has not touched a room option.
-            throwError($('#reg-modal'), 'Choose an option!');
-        }
-    } else {
-        // Nickname is blank.
-        throwError($('#reg-modal'), 'Enter a nickname!');
-    }
 }
 
 
@@ -225,15 +236,35 @@ $(function() {
         'backdrop': 'static'
     });
     $('#create-tab-header a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
+        e.preventDefault();
+        $(this).tab('show');
     });
     $('#join-tab-header a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
+        e.preventDefault();
+        $(this).tab('show');
     });
     $('#connect-user-button').click(function (e) {
-        
+        var nameValidation = validateName();
+        if ($('#join-tab').hasClass('active')) {
+            // Begin room validation if join-tab is open.
+            if (validateRoom()) {
+                checkRoom($('#room-input').val(), function (data) {
+                    // data.valid will be true if the room exists on the server.
+                    if (data.valid) {
+                        if (nameValidation) {
+                            processUserConnection($('#nickname-input').val(), $('#room-input').val());
+                        }
+                    } else {
+                        roomError('That room doesn\'t exist!');
+                    }
+                });
+            }
+        } else {
+            // Attempt to create and join new room if create-tab is open.
+            if (nameValidation) {
+                processUserConnection($('#nickname-input').val(), tRoom);
+            }
+        }
     });
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name incase the user decides to create a room.
