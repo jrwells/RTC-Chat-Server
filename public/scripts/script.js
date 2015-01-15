@@ -218,7 +218,8 @@ function processUserConnection(nickname, room) {
             setRoom(room, function (data) {
                 if (data.success) {
                     $('#chat-controls').show();
-                    //$('#room-name-header').append(gRoom);
+                    //$('#room-name-header').append('<p>' + gRoom + '</p>');
+                    $('#nickname-display-footer').append('<p>' + gNickname + '</p>');
                     $('#reg-modal').modal('hide');
                 }
             });
