@@ -10,46 +10,40 @@ html
         script(src='/socket.io/socket.io.js')
         script(src='/scripts/script.js')
     body
-        div.container
-            header
-                h1 Chat Server
-            div#reg-modal.modal.fade
-                div#modal-md.modal-dialog
-                    div.modal-content
-                        div.modal-header
-                            h4.modal-title
-                                | Connect To Chat
-                        div.modal-body
-                            form
-                                div#nickname-group.form-group
-                                    label(for='nickname-input')
-                                        | Enter a nickname...
-                                    input#nickname-input.form-control(type='text' placeholder='Nickname' aria-describedby="nickname-status")
-                                div.form-group
-                                    div(role='tabpanel')
-                                        ul.nav.nav-tabs(role='tablist')
-                                            li#create-tab-header.active(role='presentation')
-                                                a(href='#create-tab' aria-controls='create' role='tab' data-toggle='tab')
-                                                    | Create a Room
-                                            li#join-tab-header(role='presentation')
-                                                a(href='#join-tab' aria-controls='join' role='tab' data-toggle='tab')
-                                                    | Join a Room
-                                        div.tab-content
-                                            div#create-tab.tab-pane.active(role='tabpanel')
-                                                br
-                                                div.form-group
-                                                    label(for='create-input')
-                                                        | The name of your room is...
-                                                    input#create-input.form-control(type='text' disabled)
-                                            div#join-tab.tab-pane(role='tabpanel')
-                                                br
-                                                div#room-group.form-group
-                                                    label(for='join-input')
-                                                        | Enter the name of your room...                                
-                                                    input#room-input.form-control(type='text' placeholder='Room Name' aria-describedby="room-status")                                        
-                        div.modal-footer
-                            button#connect-user-button.btn.btn-primary(type='button')
-                                | Connect
-            #chat-window
-            #chat-controls
-                input(type='text')#message-input
+        div#reg-modal.modal.fade
+            div#modal-md.modal-dialog
+                div.modal-content
+                    div.modal-header
+                        h4.modal-title
+                            | Connect To Chat
+                    div.modal-body
+                        form
+                            div#nickname-group.form-group
+                                label(for='nickname-input')
+                                    | Enter a nickname...
+                                input#nickname-input.form-control(type='text' placeholder='Nickname' aria-describedby="nickname-status")
+                            div.form-group
+                                div(role='tabpanel')
+                                    ul.nav.nav-tabs(role='tablist')
+                                        li#create-tab-header.active(role='presentation')
+                                            a(href='#create-tab' aria-controls='create' role='tab' data-toggle='tab')
+                                                | Create a Room
+                                        li#join-tab-header(role='presentation')
+                                            a(href='#join-tab' aria-controls='join' role='tab' data-toggle='tab')
+                                                | Join a Room
+                                    div.tab-content
+                                        div#create-tab.tab-pane.active(role='tabpanel')
+                                            br
+                                            div.form-group
+                                                label(for='create-input')
+                                                    | The name of your room is...
+                                                input#create-input.form-control(type='text' disabled)
+                                        div#join-tab.tab-pane(role='tabpanel')
+                                            br
+                                            div#room-group.form-group
+                                                label(for='join-input')
+                                                    | Enter the name of your room...                                
+                                                input#room-input.form-control(type='text' placeholder='Room Name' aria-describedby="room-status")                                        
+                    div.modal-footer
+                        button#connect-user-button.btn.btn-primary(type='button')
+                            | Connect
