@@ -44,18 +44,19 @@
 .chat-element {
   height: auto;
   width: auto;
-  padding: 5px;
-}
-.chat-element > h4,
-.chat-element > p {
-  margin-top: -1px;
-  margin-bottom: -1px;
-}
-.chat-element > p {
-  margin-left: 5px;
+  margin: 1px 1px -2px 1px;
+  padding: 1px 1px 1px 5px;
 }
 .chat-element > h4 {
   color: #d35400;
+  margin: 1px 1px 1px 1px;
+  padding: 1px 1px 1px 1px;
+}
+.chat-element > h3 {
+  margin: 1px 1px 1px 1px;
+}
+.chat-element > p {
+  margin: 0px 0px 0px 5px;
 }
 
 /* Hide for small displays */
