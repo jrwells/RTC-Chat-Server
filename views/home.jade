@@ -66,11 +66,12 @@ html
                 li
                     a(href="#")
                         | user
+        div#chat-window
         div.sidebar-element.sidebar-footer
             #nickname-display.nav.nav-sidebar
         div#chat-bar.border-bar
             div.input-group.indent-bar-element
-                input.form-control(placeholder="A message...")
+                input#message-input.form-control(placeholder="A message...")
                 span.input-group-btn
-                    button.btn.btn-default(type="button")
+                    button#message-button.btn.btn-default(type="button")
                         span.glyphicon.glyphicon-circle-arrow-right(aria-hidden="true")

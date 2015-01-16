@@ -133,7 +133,8 @@ function roomSuccess() {
  * @notification {string} Short notification message to display to the user.
  */
 function addNotification(notification) {
-    $('#chat-window').append('<div class="notification"><p>' + notification + '</p></div>');
+    lastSender = '';
+    $('#chat-window').append('<div class="chat-element"><h4>' + notification + '<h4></div>');
 }
 
 /**
@@ -142,7 +143,13 @@ function addNotification(notification) {
  * @nickname {string} User's nickname that sent the message to be displayed.
  */
 function addMessage(msg, nickname) {
-    $('#chat-window').append('<div class="message"><p>' + nickname + ' : ' + msg + '</p></div>');
+    if (nickname !== lastSender || lastSender === '') {
+        lastSender = nickname;
+        $('#chat-window').append('<div class="chat-element"><h3>' + nickname + '</h3><p>' + msg + '</p></div>');
+    } else {
+        $('#chat-window').find('.chat-element:last').append('<p>' + msg + '</p>');
+    }
+    $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
 }
 
 
@@ -264,9 +271,22 @@ function processUserConnection(nickname, room) {
 
 
 /**
+ * Validates the message input and, if valid, adds message to chat window and sends to server.
+ */
+ function validateMessage() {
+    // If user was typing message, send the message.
+    if ($('#message-input').val() !== "") {
+        sendMessage($('#message-input').val());
+        addMessage($('#message-input').val(), gNickname);
+        $('#message-input').val('');
+    }
+ }
+
+/**
  * Default function which runs when page is ready.
  */
 $(function() {
+    $('#chat-window').css('height', '-=110px');
     $('#chat-bar').hide();
     $('#reg-modal').modal({
         'show': true,
@@ -284,6 +304,9 @@ $(function() {
     $('#connect-user-button').click(function (e) {
         validateUserConnection();
     });
+    $('#message-button').click(function (e) {
+        validateMessage();
+    });
     getRoom(function (data) {
         tRoom = data.response; // Stores this room name in case the user decides to create a room.
         $('#create-input').val(data.response);
@@ -299,12 +322,7 @@ $(document).keypress(function (event) {
     if (event.which === 13) {
         event.preventDefault();
         if ($('#message-input').is(':focus')) { 
-            // If user was typing message, send the message.
-            if ($('#message-input').val() !== "") {
-                sendMessage($('#message-input').val());
-                addMessage($('#message-input').val(), gNickname);
-                $('#message-input').val('');
-            }
+            validateMessage();
         } else if ($('#message-input').is(':visible')) {
             // If user has connected, focus the message input field.
             $('#message-input').focus();
