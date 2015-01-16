@@ -8,6 +8,10 @@ var socket = io.connect(),
 var tRoom = ''; // Stores the room that the server generates for the user.
 
 
+// Used to store the last messenge sender.
+var lastSender = '';
+
+
 // Universal UI functions
 
 
@@ -219,7 +223,7 @@ function processUserConnection(nickname, room) {
                 if (data.success) {
                     $('#chat-bar').show();
                     $('#room-name-header').append('<p>' + gRoom + '</p>');
-                    $('#nickname-display-footer').append('<p>' + gNickname + '</p>');
+                    $('#nickname-display').append(gNickname);
                     $('#reg-modal').modal('hide');
                 }
             });

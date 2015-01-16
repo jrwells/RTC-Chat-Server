@@ -48,12 +48,10 @@ html
                         button#connect-user-button.btn.btn-primary(type='button')
                             | Connect
         div#top-bar.border-bar
-            div#room-name-header.indent-bar-element
+                div#room-name-header.indent-bar-element
         div.sidebar-element.sidebar-header
-            ul.nav.nav-sidebar
-                li
-                    p
-                        | Prattle
+            div#site-name
+                | PRATTLE.ME
         div.sidebar-element.sidebar-body
             ul#user-list.nav.nav-sidebar
                 li
@@ -69,8 +67,7 @@ html
                     a(href="#")
                         | user
         div.sidebar-element.sidebar-footer
-            ul#nickname-display.nav.nav-sidebar
-                li#nickname-display-footer
+            #nickname-display.nav.nav-sidebar
         div#chat-bar.border-bar
             div.input-group.indent-bar-element
                 input.form-control(placeholder="A message...")

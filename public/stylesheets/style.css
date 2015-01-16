@@ -66,6 +66,7 @@
 }
 
 /* Sidebar items */
+#site-name, #nickname-display,
 .nav-sidebar > li > a,
 .nav-sidebar > li > p {
   padding-right: 20px;
