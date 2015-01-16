@@ -217,8 +217,8 @@ function processUserConnection(nickname, room) {
         if (data.success) {
             setRoom(room, function (data) {
                 if (data.success) {
-                    $('#chat-controls').show();
-                    //$('#room-name-header').append('<p>' + gRoom + '</p>');
+                    $('#chat-bar').show();
+                    $('#room-name-header').append('<p>' + gRoom + '</p>');
                     $('#nickname-display-footer').append('<p>' + gNickname + '</p>');
                     $('#reg-modal').modal('hide');
                 }
@@ -263,7 +263,7 @@ function processUserConnection(nickname, room) {
  * Default function which runs when page is ready.
  */
 $(function() {
-    $('#chat-controls').hide();
+    $('#chat-bar').hide();
     $('#reg-modal').modal({
         'show': true,
         'keyboard': false,

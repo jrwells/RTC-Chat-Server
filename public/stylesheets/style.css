@@ -1,52 +1,71 @@
 /* All custom css */
 
+/* Modal  */
 #modal-md {
   width: 50%;
 }
 
-/* Hide for mobile, show later */
+/* Top/chat bar */
+.border-bar {
+  position: absolute;
+  display: inline;
+  height: 55px;
+  width: 100%;
+  background-color: #ECF0F1;
+}
+#top-bar {
+  top: 0;
+  left: 0;
+  padding: 20px;
+}
+#chat-bar {
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+}
+
+/* Hide for small displays */
 .sidebar-element {
+  position: fixed;
   display: none;
+  left: 0;
+  width: 200px;
+  padding: 20px;
+  color: #ffffff;
+  border-right: 1px solid #192627;
+}
+.sidebar-header {
+  top: 0;
+  height: 55px;
+  z-index: 1005;
+  border-bottom: 1px solid #192627;
+  background-color: #2c3e50;
+}
+.sidebar-body {
+  top: 55px;
+  bottom: 55px;
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #34495e;
+}
+.sidebar-footer {
+  bottom: 0;
+  height: 55px;
+  z-index: 1005;
+  border-top: 1px solid #192627;
+  background-color: #2c3e50;
 }
 @media (min-width: 768px) {
   .sidebar-element {
-    position: fixed;
-    left: 0;
-    display: block;
-    width: 200px;
-    padding: 20px;
-    border-right: 1px solid #eee;
+    display: inline;
   }
-  .sidebar-header {
-    top: 0;
-    height: 55px;
-    z-index: 1005;
-    border-bottom: 1px solid black;
-    background-color: #dcdcdc;
-  }
-  .sidebar-body {
-    top: 55px;
-    bottom: 55px;
-    z-index: 1000;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
-  }
-  .sidebar-footer {
-    bottom: 0;
-    height: 55px;
-    z-index: 1005;
-    border-top: 1px solid black;
-    background-color: #dcdcdc;
+  .indent-bar-element {
+    padding-left: 200px;
   }
 }
 
-/* Sidebar navigation */
-.nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
+/* Sidebar items */
 .nav-sidebar > li > a,
 .nav-sidebar > li > p {
   padding-right: 20px;
