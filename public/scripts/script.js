@@ -148,7 +148,7 @@ function addMessage(msg, id, nickname) {
     if (id !== lastSenderID || lastSender === '') {
         lastSender = nickname;
         lastSenderID = id;
-        $('#chat-window').append('<div class="chat-element"><h3>' + nickname + '</h3><p>' + msg + '</p></div>');
+        $('#chat-window').append('<div class="chat-element"><h5>' + nickname + '</h5><p>' + msg + '</p></div>');
     } else {
         $('#chat-window').find('.chat-element:last').append('<p>' + msg + '</p>');
     }
