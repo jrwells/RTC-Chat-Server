@@ -152,6 +152,14 @@ function addMessage(msg, nickname) {
     $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
 }
 
+/**
+ * Adds a user to the list of users on the sidebar.
+ * @nickname {string} The username of the user to add.
+ */
+function addUser(nickname) {
+    $('#user-list').append('<li><a href="#">' + nickname + '</a></li>');
+}
+
 
 // Client to Server communication functions
 
