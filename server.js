@@ -166,7 +166,6 @@ io.sockets.on('connection', function (socket) {
         socket.join(room);
         socket.roomname = room;
         broadcastUserJoined(socket);
-        console.log(roomsWithUsers[room]);
         fn({'success': true});
     });
 
