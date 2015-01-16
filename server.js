@@ -20,7 +20,7 @@ app.get('/', function(req, res) {
 // Import words for room name generation
 var words = new xmlstream(fs.createReadStream('xml/words.xml')),
     rooms = [],
-    roomUsers = {};
+    roomsWithUsers = {};
 var adjectives = [],
     colors = [],
     nouns = [];
@@ -55,7 +55,8 @@ var io = require('socket.io').listen(server);
  * @message {string} The message being sent.
  */
 function broadcastMessage(socket, message) {
-    var data = {'message': message, 
+    var data = {'message': message,
+                'id': socket.id,
                 'nickname': socket.nickname};
     socket.broadcast.to(socket.roomname).emit('broadcastMessage', data);
     console.log("user " + socket.nickname + " sent this: " + message);
@@ -77,8 +78,9 @@ function broadcastNotification(socket, notification) {
  * @socket {socket} The socket of the user that has joined the room.
  */
 function broadcastUserJoined(socket) {
-    roomUsers[socket.roomname].push(socket.nickname);
-    var data = {'nickname': socket.nickname};
+    roomsWithUsers[socket.roomname].push([socket.id, socket.nickname]);
+    var data = {'nickname': socket.nickname,
+                'id': socket.id};
     socket.broadcast.to(socket.roomname).emit('broadcastUserJoined', data);
 }
 
@@ -87,8 +89,11 @@ function broadcastUserJoined(socket) {
  * @socket {socket} The socket of the use that has disconnected.
  */
 function broadcastUserDisconnected(socket) {
-    roomUsers[socket.roomname] = _.without(roomUsers[socket.roomname], socket.nickname);
-    var data = {'nickname': socket.nickname};
+    roomsWithUsers[socket.roomname] = _.reject(roomsWithUsers[socket.roomname], function (item) {
+        return (item[0] === socket.id && item[1] === socket.nickname);
+    });
+    var data = {'nickname': socket.nickname,
+                'id': socket.id};
     socket.broadcast.to(socket.roomname).emit('broadcastUserDisconnected', data);
 }
 
@@ -97,8 +102,11 @@ function broadcastUserDisconnected(socket) {
   * @socket {socket} the socket of the user that has left the room.
   */
 function broadcastUserLeft(socket) {
-    roomUsers[socket.roomname] = _.without(roomUsers[socket.roomname], socket.nickname);
-    var data = {'nickname': socket.nickname};
+    roomsWithUsers[socket.roomname] = _.reject(roomsWithUsers[socket.roomname], function (item) {
+        return (item[0] === socket.id && item[1] === socket.nickname);
+    });
+    var data = {'nickname': socket.nickname,
+                'id': socket.id};
     socket.broadcast.to(socket.roomname).emit('broadcastUserLeft', data);
 }
 
@@ -138,7 +146,7 @@ io.sockets.on('connection', function (socket) {
             n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         }
         rooms.push(n);
-        roomUsers[n] = [];
+        roomsWithUsers[n] = [];
         fn({'response': n});
     });
 
@@ -147,7 +155,7 @@ io.sockets.on('connection', function (socket) {
      * Response is set to an array of the users in the room.
      */
      socket.on('getUsers', function (room, fn) {
-        fn({'response': roomUsers[room]});
+        fn({'response': roomsWithUsers[room]});
      });
 
     /**
@@ -158,6 +166,7 @@ io.sockets.on('connection', function (socket) {
         socket.join(room);
         socket.roomname = room;
         broadcastUserJoined(socket);
+        console.log(roomsWithUsers[room]);
         fn({'success': true});
     });
 
@@ -167,7 +176,7 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('setNickname', function (data, fn) {
         socket.nickname = data;
-        fn({'success': true});
+        fn({'success': true, 'userID': socket.id});
     });
 
     /**

@@ -1,6 +1,7 @@
 // Initiate socket connection and define important variables
 var socket = io.connect(),
     gNickname = '', // Global user's current nickname.
+    gID = '',
     gRoom = ''; // Global user's current room.
 
 
@@ -9,7 +10,8 @@ var tRoom = ''; // Stores the room that the server generates for the user.
 
 
 // Used to store the last messenge sender.
-var lastSender = '';
+var lastSender = '',
+    lastSenderID = '';
 
 
 // Universal UI functions
@@ -142,9 +144,10 @@ function addNotification(notification) {
  * @message {string} Message to display to users.
  * @nickname {string} User's nickname that sent the message to be displayed.
  */
-function addMessage(msg, nickname) {
-    if (nickname !== lastSender || lastSender === '') {
+function addMessage(msg, id, nickname) {
+    if (id !== lastSenderID || lastSender === '') {
         lastSender = nickname;
+        lastSenderID = id;
         $('#chat-window').append('<div class="chat-element"><h3>' + nickname + '</h3><p>' + msg + '</p></div>');
     } else {
         $('#chat-window').find('.chat-element:last').append('<p>' + msg + '</p>');
@@ -156,16 +159,23 @@ function addMessage(msg, nickname) {
  * Adds a user to the list of users on the sidebar.
  * @nickname {string} The nickname of the user to add.
  */
-function addUser(nickname) {
-    $('#user-list').append('<li id="' + nickname + '-li"><a href="#">' + nickname + '</a></li>');
+function addUser(id, nickname) {
+    $('#user-list').append('<li id="' + id + '-li" class="user-li"><a href="#">' + nickname + '</a></li>');
 }
 
 /**
  * Removes a user from the list of users on the sidebar.
  * @nickname {string} The nickname of the user to remove.
  */
-function removeUser(nickname) {
-    $('#' + nickname + '-li').remove();
+function removeUser(id, nickname) {
+    $('#' + id + '-li').remove();
+}
+
+/**
+ * Clears the entire sidebar list of users.
+ */
+function clearUsers() {
+    $('.user-li').remove();
 }
 
 
@@ -259,6 +269,7 @@ function setNickname(nickname, fn) {
 function processUserConnection(nickname, room) {
     setNickname(nickname, function (data) {
         if (data.success) {
+            gID = data.userID;
             setRoom(room, function (data) {
                 if (data.success) {
                     $('#chat-bar').show();
@@ -267,7 +278,7 @@ function processUserConnection(nickname, room) {
                     $('#reg-modal').modal('hide');
                     getUsers(gRoom, function (data) {
                         $.each(data.response, function (i, value) {
-                            addUser(value);
+                            addUser(value[0], value[1]);
                         });
                     });
                 }
@@ -316,7 +327,7 @@ function processUserConnection(nickname, room) {
     // If user was typing message, send the message.
     if ($('#message-input').val() !== "") {
         sendMessage($('#message-input').val());
-        addMessage($('#message-input').val(), gNickname);
+        addMessage($('#message-input').val(), gID, gNickname);
         $('#message-input').val('');
     }
  }
@@ -387,7 +398,7 @@ $(document).keypress(function (event) {
  * Handles a message inside the user's room.
  */
 socket.on('broadcastMessage', function (data) {
-    addMessage(data['message'], data['nickname']);
+    addMessage(data['message'], data['id'], data['nickname']);
 });
 
 /**
@@ -402,7 +413,7 @@ socket.on('broadcastNotification', function (data) {
  */
 socket.on('broadcastUserJoined', function (data) {
     addNotification(data['nickname'] + ' has joined the room.');
-    addUser(data['nickname']);
+    addUser(data['id'], data['nickname']);
 });
 
 /**
@@ -410,7 +421,7 @@ socket.on('broadcastUserJoined', function (data) {
  */
 socket.on('broadcastUserDisconnected', function (data) {
     addNotification(data['nickname'] + ' has disconnected.');
-    removeUser(data['nickname']);
+    removeUser(data['id'], data['nickname']);
 });
 
 /** 
@@ -418,5 +429,5 @@ socket.on('broadcastUserDisconnected', function (data) {
  */
 socket.on('broadcastUserLeft', function (data) {
     addNotification(data['nickname'] + ' has left the room.');
-    removeUser(data['nickname']);
+    removeUser(data['id'], data['nickname']);
 });
