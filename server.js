@@ -114,6 +114,13 @@ io.sockets.on('connection', function (socket) {
     });
 
     /**
+     * Server has been asked to delete a room that it created and was unused.
+     */
+    socket.on('sendDeleteRoom', function (room) {
+        rooms = _.without(rooms, room);
+    });
+
+    /**
      * Server has been asked to check if a room exists.
      * Valid is true when the room exists, false when it does not.
      */

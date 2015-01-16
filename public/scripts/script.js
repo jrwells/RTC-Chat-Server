@@ -192,6 +192,14 @@ function sendMessage(message) {
 }
 
 /**
+ * Tells the server to delete the unused room that it created for the user.
+ * @room {string} Name of the room that was unused and will be deleted.
+ */
+function sendDeleteRoom(room) {
+    socket.emit('sendDeleteRoom', room);
+}
+
+/**
  * Sends a room name that will be checked for existence by the server.
  * If the name exists, the user will attempt to join the room.
  * If the name does not exist, an error will be thrown.
@@ -282,6 +290,7 @@ function processUserConnection(nickname, room) {
                 if (data.valid) {
                     if (nameValidation) {
                         roomSuccess();
+                        sendDeleteRoom(tRoom);
                         processUserConnection($('#nickname-input').val(), $('#room-input').val());
                     }
                 } else {
