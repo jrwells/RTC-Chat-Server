@@ -154,10 +154,18 @@ function addMessage(msg, nickname) {
 
 /**
  * Adds a user to the list of users on the sidebar.
- * @nickname {string} The username of the user to add.
+ * @nickname {string} The nickname of the user to add.
  */
 function addUser(nickname) {
-    $('#user-list').append('<li><a href="#">' + nickname + '</a></li>');
+    $('#user-list').append('<li id="' + nickname + '-li"><a href="#">' + nickname + '</a></li>');
+}
+
+/**
+ * Removes a user from the list of users on the sidebar.
+ * @nickname {string} The nickname of the user to remove.
+ */
+function removeUser(nickname) {
+    $('#' + nickname + '-li').remove();
 }
 
 
@@ -192,6 +200,15 @@ function sendMessage(message) {
  */
 function checkRoom(room, fn) {
     socket.emit('checkRoom', room, fn);
+}
+
+/**
+ * Asks the server to send an array of the users in a room.
+ * @room {string} Name of the room to check.
+ * @fn {function} Callback function to pass to server to handle response.
+ */
+function getUsers(room, fn) {
+    socket.emit('getUsers', room, fn);
 }
 
 /** 
@@ -240,6 +257,11 @@ function processUserConnection(nickname, room) {
                     $('#room-name-header').append('<p>' + gRoom + '</p>');
                     $('#nickname-display').append(gNickname);
                     $('#reg-modal').modal('hide');
+                    getUsers(gRoom, function (data) {
+                        $.each(data.response, function (i, value) {
+                            addUser(value);
+                        });
+                    });
                 }
             });
         }
@@ -364,4 +386,28 @@ socket.on('broadcastMessage', function (data) {
  */
 socket.on('broadcastNotification', function (data) {
     addNotification(data['notification']);
+});
+
+/**
+ * Handles a server notification of a user joining the room.
+ */
+socket.on('broadcastUserJoined', function (data) {
+    addNotification(data['nickname'] + ' has joined the room.');
+    addUser(data['nickname']);
+});
+
+/**
+ * Handles a server notification of a user disconnecting.
+ */
+socket.on('broadcastUserDisconnected', function (data) {
+    addNotification(data['nickname'] + ' has disconnected.');
+    removeUser(data['nickname']);
+});
+
+/** 
+ * Handles a server notification of a user leaving the room.
+ */
+socket.on('broadcastUserLeft', function (data) {
+    addNotification(data['nickname'] + ' has left the room.');
+    removeUser(data['nickname']);
 });

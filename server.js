@@ -19,7 +19,8 @@ app.get('/', function(req, res) {
 
 // Import words for room name generation
 var words = new xmlstream(fs.createReadStream('xml/words.xml')),
-    rooms = [];
+    rooms = [],
+    roomUsers = {};
 var adjectives = [],
     colors = [],
     nouns = [];
@@ -71,6 +72,36 @@ function broadcastNotification(socket, notification) {
     console.log(socket.roomname + ': ' + notification);
 }
 
+/**
+ * Notify all sockets in a given room that a user has joined the room.
+ * @socket {socket} The socket of the user that has joined the room.
+ */
+function broadcastUserJoined(socket) {
+    roomUsers[socket.roomname].push(socket.nickname);
+    var data = {'nickname': socket.nickname};
+    socket.broadcast.to(socket.roomname).emit('broadcastUserJoined', data);
+}
+
+/**
+ * Notify all sockets in a given room that a user has disconnected.
+ * @socket {socket} The socket of the use that has disconnected.
+ */
+function broadcastUserDisconnected(socket) {
+    roomUsers[socket.roomname] = _.without(roomUsers[socket.roomname], socket.nickname);
+    var data = {'nickname': socket.nickname};
+    socket.broadcast.to(socket.roomname).emit('broadcastUserDisconnected', data);
+}
+
+ /**
+  * Notify all sockets in a given room that a user has left the room.
+  * @socket {socket} the socket of the user that has left the room.
+  */
+function broadcastUserLeft(socket) {
+    roomUsers[socket.roomname] = _.without(roomUsers[socket.roomname], socket.nickname);
+    var data = {'nickname': socket.nickname};
+    socket.broadcast.to(socket.roomname).emit('broadcastUserLeft', data);
+}
+
 
 // Client to server communication messages
 io.sockets.on('connection', function (socket) {
@@ -100,8 +131,17 @@ io.sockets.on('connection', function (socket) {
             n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         }
         rooms.push(n);
+        roomUsers[n] = [];
         fn({'response': n});
     });
+
+    /**
+     * Server has been asked to send an array of users in a room.
+     * Response is set to an array of the users in the room.
+     */
+     socket.on('getUsers', function (room, fn) {
+        fn({'response': roomUsers[room]});
+     });
 
     /**
      * Server has been asked to move a socket to a room.
@@ -110,7 +150,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('setRoom', function (room, fn) {
         socket.join(room);
         socket.roomname = room;
-        broadcastNotification(socket, socket.nickname + ' has joined the room.')
+        broadcastUserJoined(socket);
         fn({'success': true});
     });
 
@@ -122,6 +162,13 @@ io.sockets.on('connection', function (socket) {
         socket.nickname = data;
         fn({'success': true});
     });
+
+    /**
+     * Server has been notified of a user disconnecting.
+     */
+     socket.on('disconnect', function () {
+        broadcastUserDisconnected(socket);
+     });
 });
 
 
