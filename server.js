@@ -59,7 +59,6 @@ function broadcastMessage(socket, message) {
                 'id': socket.id,
                 'nickname': socket.nickname};
     socket.broadcast.to(socket.roomname).emit('broadcastMessage', data);
-    console.log("user " + socket.nickname + " sent this: " + message);
 }
 
 /**
@@ -70,7 +69,6 @@ function broadcastMessage(socket, message) {
 function broadcastNotification(socket, notification) {
     var data = {'notification': notification};
     socket.broadcast.to(socket.roomname).emit('broadcastNotification', data);
-    console.log(socket.roomname + ': ' + notification);
 }
 
 /**
