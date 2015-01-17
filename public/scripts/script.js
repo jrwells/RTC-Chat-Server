@@ -431,3 +431,12 @@ socket.on('broadcastUserLeft', function (data) {
     addNotification(data['nickname'] + ' has left the room.');
     removeUser(data['id'], data['nickname']);
 });
+
+/**
+ * Handles resizing of the chat window.
+ */
+$(window).resize(function() {
+    var height = $(document).height();
+    $('#chat-window').height(height);
+    $('#chat-window').css('height', '-=130px');
+});
