@@ -20,6 +20,7 @@
   padding: 20px;
 }
 #room-name-header {
+  color: #000b1d;
   float: right;
   margin-right: 55px;
   font-family: 'Droid Sans', sans-serif;
@@ -40,6 +41,7 @@
   padding: 10px;
   overflow-y: auto;
   font-family: 'Ubuntu', sans-serif;
+  font-weight: 400;
 }
 .chat-element {
   height: auto;
@@ -48,8 +50,9 @@
   padding: 1px 1px 1px 5px;
 }
 .chat-element > h5 {
+  color: #000b1d;
   font-size: 1.1em;
-  font-weight: bold;
+  font-weight: 500;
   margin: 1px 1px 1px 1px;
 }
 .chat-element > h4 {
@@ -59,7 +62,8 @@
   padding: 1px 1px 1px 1px;
 }
 .chat-element > p {
-  margin: 0px 0px 0px 10px;
+  color: #4c595a;
+  margin: 0px 0px 0px 5px;
 }
 
 /* Hide for small displays */
