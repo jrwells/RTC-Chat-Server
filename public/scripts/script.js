@@ -307,7 +307,16 @@ function rtcListener(room, peers) {
 function initializeRTC() {
     easyrtc.setRoomOccupantListener(rtcListener);
     var callback = function () {};
-    easyrtc.initMediaSource(function() {easyrtc.connect("chat", callback, callback);}, callback);
+    $('#microphone-modal').modal({
+        'show': true,
+        'keyboard': false,
+        'backdrop': 'static'
+    });
+    easyrtc.initMediaSource(function() {
+        easyrtc.connect("chat", function () {
+            $('#microphone-modal').hide();
+        }, callback);
+    }, callback);
     easyrtc.joinRoom(gRoom, null, callback, callback);
 }
 

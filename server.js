@@ -145,7 +145,7 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('getRoom', function (fn) {
         var n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
-        while (rooms.indexOf(n) > -1 && n.length > 32) {
+        while (rooms.indexOf(n) > -1 || n.length > 32) {
             n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         }
         rooms.push(n);

@@ -5,6 +5,10 @@
   width: 50%;
 }
 
+.alert-header {
+  text-align: center;
+}
+
 #media-elements {
   display: none;
 }
