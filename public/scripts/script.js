@@ -271,54 +271,45 @@ function setNickname(nickname, fn) {
 // WebRTC
 
 
+// Set port and turn off video
 easyrtc.setSocketUrl(":8080");
 easyrtc.dontAddCloseButtons(true);
 easyrtc.enableVideo(false);
 easyrtc.enableVideoReceive(false);
+
+// Construct new element when a new stream arrives
 easyrtc.setStreamAcceptor(function (id, stream) {
     $('#media-elements').append('<video id="peer-' + id + '" class="peer-media"></video>');
     easyrtc.setVideoObjectSrc($('#peer-' + id)[0], stream);
 });
+
+// Destroy that element when a stream closes
 easyrtc.setOnStreamClosed(function (id) {
     $('#peer-' + id).remove();
 });
 
-
+/**
+ * Function that calls all current members in a room when the user connects.
+ * @room {object} Room that the user and other users belong to.
+ * @peers {array} Array of users in the room.
+ */
 function rtcListener(room, peers) {
-    easyrtc.setRoomOccupantListener(null);
+    easyrtc.setRoomOccupantListener(null); // Only call the memebers when user joins
+    var callback = function () {};
     for(var id in peers) {
         console.log('calling: ' + id);
-        easyrtc.call(id,
-            function(id) {
-                console.log("completed call to " + id);
-            },
-            function(errorCode, errorText) {
-                console.log("err:" + errorText);
-            },
-            function(accepted, bywho) {
-                console.log((accepted?"accepted":"rejected")+ " by " + bywho);
-            }
-        );
+        easyrtc.call(id, callback, callback, callback);
     }
 }
 
+/**
+ * Function sets up the user's rtc object and connect.
+ */
 function initializeRTC() {
     easyrtc.setRoomOccupantListener(rtcListener);
-    var connectSuccess = function (id) {
-        console.log("My easyrtcid is " + id);
-    }
-    var connectFailure = function (errmesg) {
-        console.log(errmesg);
-    }
-    easyrtc.initMediaSource(function() {easyrtc.connect("chat", connectSuccess, connectFailure);}, connectFailure);
-    easyrtc.joinRoom(gRoom, null,
-        function (room) {
-            console.log("I'm now in room " + room);
-        },
-        function (errorCode, errorText, room) {
-            console.log("Had problems joining " + room);
-        }
-    );
+    var callback = function () {};
+    easyrtc.initMediaSource(function() {easyrtc.connect("chat", callback, callback);}, callback);
+    easyrtc.joinRoom(gRoom, null, callback, callback);
 }
 
 
