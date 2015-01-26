@@ -297,7 +297,6 @@ function rtcListener(room, peers) {
     easyrtc.setRoomOccupantListener(null); // Only call the memebers when user joins
     var callback = function () {};
     for(var id in peers) {
-        console.log('calling: ' + id);
         easyrtc.call(id, callback, callback, callback);
     }
 }
