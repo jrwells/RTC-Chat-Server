@@ -314,9 +314,16 @@ function initializeRTC() {
     });
     easyrtc.initMediaSource(function() {
         easyrtc.connect("chat", function () {
+                $('#microphone-modal').hide();
+            }, function () {
+                $('#microphone-modal').hide();
+                addNotification('You will be unable to use audio.');
+            });
+        }, function () {
             $('#microphone-modal').hide();
-        }, callback);
-    }, callback);
+            addNotification('You will be unable to use audio.');
+        }
+    );
     easyrtc.joinRoom(gRoom, null, callback, callback);
 }
 
