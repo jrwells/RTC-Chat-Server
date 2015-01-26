@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "sudo node server.js 0",
+    "start": "sudo node server.js 1"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "jade": "^1.9.1",
     "socket.io": "^1.3.2",
     "underscore": "^1.7.0",
-    "xml-stream": "^0.4.5"
+    "xml-stream": "^0.4.5",
+    "easyrtc": "*"
   }
 }

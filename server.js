@@ -5,8 +5,11 @@ var _ = require('underscore'),
     jade = require('jade'),
     fs = require('fs'),
     xmlstream = require('xml-stream'),
+    easyrtc = require('easyrtc'),
     app = module.exports.app = express(),
-    server = http.createServer(app);
+    rtcApp = module.exports.app = express(),
+    server = http.createServer(app),
+    rtcServer = http.createServer(rtcApp);
 
 // Set up server file structure
 app.set('views', __dirname + '/views');
@@ -36,7 +39,9 @@ words.on('text: nouns > word', function (item) {
 });
 
 // Set up socket.io server
-var io = require('socket.io').listen(server);
+var socketio = require('socket.io'),
+    io = socketio.listen(server),
+    rtcIO = socketio.listen(rtcServer);
 
 
 // Server to client communication functions
@@ -185,6 +190,16 @@ io.sockets.on('connection', function (socket) {
 });
 
 
+// WebRTC configuration
+easyrtc.roomDefaultEnable = false;
+
+
 // Start server, and tell us it's running
 server.listen(128);
-console.log('Server Running...');
+rtcServer.listen(8080);
+var easyrtcServer;
+if (process.argv[2] === '0') {
+    easyrtcServer = easyrtc.listen(rtcApp, rtcIO, {logLevel:"debug", logDateEnable:true});
+} else {
+    easyrtcServer = easyrtc.listen(rtcApp, rtcIO);
+}

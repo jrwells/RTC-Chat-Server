@@ -18,6 +18,13 @@ var lastSender = '',
 
 
 /**
+ * Display's an alert notifying the user that his/her browser does not support WebRTC.
+ */
+function webrtcIncompatible() {
+
+}
+
+/**
  * Clears all errors.
  */
 function clearErrors() {
@@ -64,6 +71,9 @@ function validateName() {
         return false;
     } else if ($('#nickname-input').val().length < 3) {
         nameError('Nickname must be at least 3 characters!');
+        return false;
+    } else if ($('#nickname-input').val().length > 9) {
+        nameError('Nickname must be less than 10 characters!');
         return false;
     } else {
         nameSuccess();
@@ -258,6 +268,59 @@ function setNickname(nickname, fn) {
 }
 
 
+// WebRTC
+
+easyrtc.setSocketUrl(":8080");
+easyrtc.dontAddCloseButtons(true);
+easyrtc.enableVideo(false);
+easyrtc.enableVideoReceive(false);
+easyrtc.setStreamAcceptor(function (id, stream) {
+    $('#media-elements').append('<video id="peer-' + id + '"></video>');
+    easyrtc.setVideoObjectSrc($('#peer-' + id)[0], stream);
+});
+easyrtc.setOnStreamClosed(function (id) {
+    $('#peer-' + id).remove();
+});
+
+
+function listener(room, peers) {
+    easyrtc.setRoomOccupantListener(null);
+    for(var id in peers) {
+        console.log('calling: ' + id);
+        easyrtc.call(id,
+            function(id) {
+                console.log("completed call to " + id);
+            },
+            function(errorCode, errorText) {
+                console.log("err:" + errorText);
+            },
+            function(accepted, bywho) {
+                console.log((accepted?"accepted":"rejected")+ " by " + bywho);
+            }
+        );
+    }
+}
+
+function initializeRTC() {
+    easyrtc.setRoomOccupantListener(listener);
+    var connectSuccess = function (id) {
+        console.log("My easyrtcid is " + id);
+    }
+    var connectFailure = function (errmesg) {
+        console.log(errmesg);
+    }
+    easyrtc.initMediaSource(function() {easyrtc.connect("chat", connectSuccess, connectFailure);}, connectFailure);
+    easyrtc.joinRoom(gRoom, null,
+        function (room) {
+            console.log("I'm now in room " + room);
+        },
+        function (errorCode, errorText, room) {
+            console.log("Had problems joining " + room);
+        }
+    );
+}
+
+
 // User interaction handling
 
 
@@ -281,6 +344,7 @@ function processUserConnection(nickname, room) {
                             addUser(value[0], value[1]);
                         });
                     });
+                    initializeRTC();
                 }
             });
         }
@@ -316,6 +380,7 @@ function processUserConnection(nickname, room) {
         }
     }
  }
+
 
 // Default function and page functionality functions 
 
