@@ -145,7 +145,7 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('getRoom', function (fn) {
         var n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
-        while (rooms.indexOf(n) > -1) {
+        while (rooms.indexOf(n) > -1 && n.length > 32) {
             n = 'the-' + _.sample(adjectives) + '-' + _.sample(colors) + '-' + _.sample(nouns);
         }
         rooms.push(n);
@@ -198,6 +198,9 @@ easyrtc.roomDefaultEnable = false;
 server.listen(128);
 rtcServer.listen(8080);
 var easyrtcServer;
+
+
+// Check if started debug mode before starting RTC server
 if (process.argv[2] === '0') {
     easyrtcServer = easyrtc.listen(rtcApp, rtcIO, {logLevel:"debug", logDateEnable:true});
 } else {

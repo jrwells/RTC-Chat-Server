@@ -5,7 +5,11 @@
   width: 50%;
 }
 
-#media-element {
+#media-elements {
+  display: none;
+}
+
+.peer-media {
   display: none;
 }
 

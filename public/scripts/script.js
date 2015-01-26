@@ -270,12 +270,13 @@ function setNickname(nickname, fn) {
 
 // WebRTC
 
+
 easyrtc.setSocketUrl(":8080");
 easyrtc.dontAddCloseButtons(true);
 easyrtc.enableVideo(false);
 easyrtc.enableVideoReceive(false);
 easyrtc.setStreamAcceptor(function (id, stream) {
-    $('#media-elements').append('<video id="peer-' + id + '"></video>');
+    $('#media-elements').append('<video id="peer-' + id + '" class="peer-media"></video>');
     easyrtc.setVideoObjectSrc($('#peer-' + id)[0], stream);
 });
 easyrtc.setOnStreamClosed(function (id) {
@@ -283,7 +284,7 @@ easyrtc.setOnStreamClosed(function (id) {
 });
 
 
-function listener(room, peers) {
+function rtcListener(room, peers) {
     easyrtc.setRoomOccupantListener(null);
     for(var id in peers) {
         console.log('calling: ' + id);
@@ -302,7 +303,7 @@ function listener(room, peers) {
 }
 
 function initializeRTC() {
-    easyrtc.setRoomOccupantListener(listener);
+    easyrtc.setRoomOccupantListener(rtcListener);
     var connectSuccess = function (id) {
         console.log("My easyrtcid is " + id);
     }
