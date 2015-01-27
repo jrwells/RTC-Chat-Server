@@ -1,3 +1,7 @@
+// No magic numbers
+var textPort = 80,
+    rtcPort = 8080;
+
 // All Module Imports
 var _ = require('underscore'),
     http = require('http'),
@@ -195,8 +199,8 @@ easyrtc.roomDefaultEnable = false;
 
 
 // Start server, and tell us it's running
-server.listen(128);
-rtcServer.listen(8080);
+server.listen(textPort);
+rtcServer.listen(rtcPort);
 var easyrtcServer;
 
 

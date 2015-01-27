@@ -1,3 +1,7 @@
+// No magic numbers
+var rtcPort = 8080;
+
+
 // Initiate socket connection and define important variables
 var socket = io.connect(),
     gNickname = '', // Global user's current nickname.
@@ -53,6 +57,8 @@ function throwWarning(element, warning) {
 // User connection validation functions
 
 
+var minNameLength = 3,
+    maxNameLength = 9;
 /**
  * Perform local validation of the nickname-input field.
  * Displays an error if one exists, and success if one does not.
@@ -62,10 +68,10 @@ function validateName() {
     if (!$('#nickname-input').val()) {
         nameError('Must Enter a Nickname!');
         return false;
-    } else if ($('#nickname-input').val().length < 3) {
+    } else if ($('#nickname-input').val().length < minNameLength) {
         nameError('Nickname must be at least 3 characters!');
         return false;
-    } else if ($('#nickname-input').val().length > 9) {
+    } else if ($('#nickname-input').val().length > maxNameLength) {
         nameError('Nickname must be less than 10 characters!');
         return false;
     } else {
@@ -265,7 +271,7 @@ function setNickname(nickname, fn) {
 
 
 // Set port and turn off video
-easyrtc.setSocketUrl(":8080");
+easyrtc.setSocketUrl(":" + rtcPort);
 easyrtc.dontAddCloseButtons(true);
 easyrtc.enableVideo(false);
 easyrtc.enableVideoReceive(false);
@@ -438,12 +444,13 @@ $(function() {
 });
 
 
+var enterCode = 13;
 /**
  * Handles all user keypresses
  */
 $(document).keypress(function (event) {
     // Handles the ENTER key being pressed.
-    if (event.which === 13) {
+    if (event.which === enterCode) {
         event.preventDefault();
         if ($('#message-input').is(':focus')) { 
             validateMessage();
