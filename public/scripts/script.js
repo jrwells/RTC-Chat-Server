@@ -18,13 +18,6 @@ var lastSender = '',
 
 
 /**
- * Display's an alert notifying the user that his/her browser does not support WebRTC.
- */
-function webrtcIncompatible() {
-
-}
-
-/**
  * Clears all errors.
  */
 function clearErrors() {
