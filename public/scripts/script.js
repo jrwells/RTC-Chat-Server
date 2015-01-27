@@ -317,11 +317,16 @@ function initializeRTC() {
                 $('#microphone-modal').hide();
             }, function () {
                 $('#microphone-modal').hide();
-                addNotification('You will be unable to use audio.');
+                addNotification('You will be unable to use audio chat.');
             });
         }, function () {
             $('#microphone-modal').hide();
-            addNotification('You will be unable to use audio.');
+            easyrtc.enableAudio(false);
+            easyrtc.connect("chat", function () {
+                    addNotification('You will be unable to send audio.');
+                }, function () {
+                    addNotification('You will be unable to use audio chat.');
+            });
         }
     );
     easyrtc.joinRoom(gRoom, null, callback, callback);
