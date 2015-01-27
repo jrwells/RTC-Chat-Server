@@ -356,7 +356,11 @@ function processUserConnection(nickname, room) {
                             addUser(value[0], value[1]);
                         });
                     });
-                    initializeRTC();
+                    if (navigator.mozGetUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia) {
+                        initializeRTC();
+                    } else {
+                        addNotification('Your browser does not support WebRTC, you will not be able to use audio chat.');
+                    }
                 }
             });
         }
